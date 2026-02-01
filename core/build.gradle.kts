@@ -15,6 +15,9 @@ dependencies {
         }
 		bundledModule("intellij.spellchecker")
     }
+    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:$serializationVersion") {
+        isTransitive = false
+    }
     implementation(project(":lang")) {
         isTransitive = false
     }
