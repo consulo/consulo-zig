@@ -71,7 +71,7 @@ class ZigDebuggerToolchainService {
         val (frameworkPath, frontendPath) = when {
             SystemInfo.isMac -> "LLDB.framework" to "LLDBFrontend"
             SystemInfo.isUnix -> "lib/liblldb.so" to "bin/LLDBFrontend"
-//            SystemInfo.isWindows -> "bin/liblldb.dll" to "bin/LLDBFrontend.exe"
+            SystemInfo.isWindows -> "bin/liblldb.dll" to "bin/LLDBFrontend.exe"
             else -> return DebuggerAvailability.Unavailable
         }
 
@@ -94,11 +94,11 @@ class ZigDebuggerToolchainService {
 
     fun gdbAvailability(): DebuggerAvailability<GDBBinaries> {
         if (SystemInfo.isMac) return DebuggerAvailability.Unavailable
-        if (CidrDebuggerPathManager.getBundledGDBBinary().exists()) return DebuggerAvailability.Bundled
+        if (CidrDebuggerPathManager.bundledGDBBinary.exists()) return DebuggerAvailability.Bundled
 
         val gdbBinaryPath = when {
             SystemInfo.isUnix -> "bin/gdb"
-//            SystemInfo.isWindows -> "bin/gdb.exe"
+            SystemInfo.isWindows -> "bin/gdb.exe"
             else -> return DebuggerAvailability.Unavailable
         }
 

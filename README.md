@@ -97,9 +97,9 @@ debug zig code with them. You can still use those IDEs to develop code and use e
 
 ### Windows
 
-Supported debuggers: `MSVC`
+Supported debuggers: `MSVC`, `LLDB`, `GDB`
 
-Debugging on Windows requires you to set up the Microsoft debugger.
+Debugging with MSVC requires you to set up the Microsoft debugger.
 
 To do this, go to the following URL and install the MSVC compiler toolset according to step 3 in the prerequisites:
 https://code.visualstudio.com/docs/cpp/config-msvc
