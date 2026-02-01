@@ -10,10 +10,10 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 plugins {
     kotlin("jvm") version "2.1.20" apply false
     kotlin("plugin.serialization") version "2.1.20" apply false
-    id("org.jetbrains.intellij.platform") version "2.10.2"
-    id("org.jetbrains.changelog") version "2.4.0"
-    id("org.jetbrains.grammarkit") version "2022.3.2.2" apply false
-    id("org.jetbrains.gradle.plugin.idea-ext") version "1.3"
+    id("org.jetbrains.intellij.platform") version "2.11.0"
+    id("org.jetbrains.changelog") version "2.5.0"
+    id("org.jetbrains.grammarkit") version "2023.3.0.1" apply false
+    id("org.jetbrains.gradle.plugin.idea-ext") version "1.4"
     idea
     `maven-publish`
 }
@@ -130,7 +130,7 @@ dependencies {
             }
         }
 
-        pluginVerifier(version = "1.384")
+        pluginVerifier()
         zipSigner()
         if (lspCompat) {
             plugin(lsp4ijPluginString)
@@ -201,7 +201,6 @@ intellijPlatform {
                 )
             }
         }
-        this.freeArgs.add("-offline")
     }
     buildSearchableOptions = false
     instrumentCode = false
