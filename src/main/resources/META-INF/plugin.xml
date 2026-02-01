@@ -3,6 +3,8 @@
     <name>ZigBrains</name>
     <vendor>FalsePattern</vendor>
 
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.redhat.devtools.lsp4ij</depends>
     <content>
         <module name="com.falsepattern.zigbrains.lang" loading="required"/>
         <module name="com.falsepattern.zigbrains.core" loading="required"/>
