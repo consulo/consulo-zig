@@ -1,15 +1,13 @@
 <idea-plugin>
+    <dependencies>
+        <module name="intellij.spellchecker"/>
+        <module name="com.falsepattern.zigbrains.lang"/>
+    </dependencies>
     <resource-bundle>zigbrains.Bundle</resource-bundle>
     <!-- region Zig -->
     <extensions defaultExtensionNs="com.intellij">
         <colorSettingsPage
                 implementation="com.falsepattern.zigbrains.zig.highlighter.ZigColorSettingsPage"/>
-        <fileType
-                name="Zig File"
-                implementationClass="com.falsepattern.zigbrains.zig.ZigFileType"
-                fieldName="INSTANCE"
-                language="Zig"
-                extensions="zig"/>
         <lang.braceMatcher
                 language="Zig"
                 implementationClass="com.falsepattern.zigbrains.zig.pairing.ZigBraceMatcher"/>
@@ -74,12 +72,6 @@
 
     <!-- region Zon -->
     <extensions defaultExtensionNs="com.intellij">
-        <fileType
-                name="Zon File"
-                implementationClass="com.falsepattern.zigbrains.zon.ZonFileType"
-                fieldName="INSTANCE"
-                language="Zon"
-                extensions="zon"/>
         <lang.braceMatcher
                 language="Zon"
                 implementationClass="com.falsepattern.zigbrains.zon.pairing.ZonBraceMatcher"/>
@@ -102,6 +94,30 @@
     <!-- endregion Zon -->
 
     <!-- region Project -->
+
+    <extensionPoints>
+        <extensionPoint
+                interface="com.falsepattern.zigbrains.project.toolchain.base.ZigToolchainExtensionsProvider"
+                dynamic="true"
+                qualifiedName="com.falsepattern.zigbrains.toolchainExtensionsProvider"
+        />
+        <extensionPoint
+                interface="com.falsepattern.zigbrains.project.settings.ZigProjectConfigurationProvider"
+                dynamic="true"
+                qualifiedName="com.falsepattern.zigbrains.projectConfigProvider"
+        />
+        <extensionPoint
+                interface="com.falsepattern.zigbrains.project.toolchain.base.ZigToolchainProvider"
+                dynamic="true"
+                qualifiedName="com.falsepattern.zigbrains.toolchainProvider"
+        />
+        <extensionPoint
+                interface="com.falsepattern.zigbrains.shared.ZBFeatures"
+                dynamic="true"
+                qualifiedName="com.falsepattern.zigbrains.featureProvider"
+        />
+    </extensionPoints>
+
     <extensions defaultExtensionNs="com.intellij">
         <configurationType
                 implementation="com.falsepattern.zigbrains.project.execution.run.ZigConfigTypeRun"

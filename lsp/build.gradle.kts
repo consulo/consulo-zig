@@ -41,3 +41,7 @@ tasks {
         enabled = false
     }
 }
+
+tasks.composedJar {
+    archiveFileName = "com.falsepattern.zigbrains.lsp.jar"
+}

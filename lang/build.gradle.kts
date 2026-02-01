@@ -100,3 +100,7 @@ run {
     }
 }
 //endregion grammars
+
+tasks.composedJar {
+    archiveFileName = "com.falsepattern.zigbrains.lang.jar"
+}

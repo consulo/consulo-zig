@@ -19,3 +19,7 @@ dependencies {
         isTransitive = false
     }
 }
+
+tasks.composedJar {
+    archiveFileName = "com.falsepattern.zigbrains.core.jar"
+}

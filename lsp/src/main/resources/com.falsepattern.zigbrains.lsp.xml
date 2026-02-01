@@ -21,6 +21,18 @@
   -->
 
 <idea-plugin>
+    <dependencies>
+        <module name="com.falsepattern.zigbrains.core"/>
+        <module name="com.falsepattern.zigbrains.lang"/>
+        <plugin id="com.redhat.devtools.lsp4ij"/>
+    </dependencies>
+    <extensionPoints>
+        <extensionPoint
+                interface="com.falsepattern.zigbrains.lsp.config.ZLSConfigProviderBase"
+                dynamic="true"
+                qualifiedName="com.falsepattern.zigbrains.zlsConfigProvider"
+        />
+    </extensionPoints>
     <extensions defaultExtensionNs="com.intellij">
         <!-- LSP textDocument/signatureHelp -->
         <codeInsight.parameterInfo

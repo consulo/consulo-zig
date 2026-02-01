@@ -1,5 +1,18 @@
-<idea-plugin package="com.falsepattern.zigbrains.debugger">
-    <depends>com.intellij.modules.cidr.debugger</depends>
+<idea-plugin>
+    <dependencies>
+        <module name="intellij.cidr.workspaceModel"/>
+        <module name="com.falsepattern.zigbrains.core"/>
+        <module name="com.falsepattern.zigbrains.lang"/>
+        <plugin id="com.intellij.modules.cidr.debugger"/>
+    </dependencies>
+
+    <extensionPoints>
+        <extensionPoint
+                interface="com.falsepattern.zigbrains.debugbridge.ZigDebuggerDriverConfigurationProviderBase"
+                dynamic="true"
+                qualifiedName="com.falsepattern.zigbrains.debuggerDriverProvider"
+        />
+    </extensionPoints>
 
     <extensions defaultExtensionNs="com.intellij">
         <configurationType

@@ -3,43 +3,11 @@
     <name>ZigBrains</name>
     <vendor>FalsePattern</vendor>
 
-    <depends config-file="zigbrains-core.xml">com.intellij.modules.platform</depends>
-    <depends config-file="zigbrains-lsp.xml">com.redhat.devtools.lsp4ij</depends>
-    <depends config-file="zigbrains-debugger.xml" optional="true">com.intellij.nativeDebug</depends>
-    <depends config-file="zigbrains-clion.xml" optional="true">com.intellij.clion</depends>
-
-    <resource-bundle>zigbrains.Bundle</resource-bundle>
-
-    <extensionPoints>
-        <extensionPoint
-                interface="com.falsepattern.zigbrains.lsp.config.ZLSConfigProviderBase"
-                dynamic="true"
-                name="zlsConfigProvider"
-        />
-        <extensionPoint
-                interface="com.falsepattern.zigbrains.project.toolchain.base.ZigToolchainExtensionsProvider"
-                dynamic="true"
-                name="toolchainExtensionsProvider"
-        />
-        <extensionPoint
-                interface="com.falsepattern.zigbrains.project.settings.ZigProjectConfigurationProvider"
-                dynamic="true"
-                name="projectConfigProvider"
-        />
-        <extensionPoint
-                interface="com.falsepattern.zigbrains.project.toolchain.base.ZigToolchainProvider"
-                dynamic="true"
-                name="toolchainProvider"
-        />
-        <extensionPoint
-                interface="com.falsepattern.zigbrains.shared.ZBFeatures"
-                dynamic="true"
-                name="featureProvider"
-        />
-        <extensionPoint
-                interface="com.falsepattern.zigbrains.debugbridge.ZigDebuggerDriverConfigurationProviderBase"
-                dynamic="true"
-                name="debuggerDriverProvider"
-        />
-    </extensionPoints>
+    <content>
+        <module name="com.falsepattern.zigbrains.lang" loading="required"/>
+        <module name="com.falsepattern.zigbrains.core" loading="required"/>
+        <module name="com.falsepattern.zigbrains.lsp" loading="optional"/>
+        <module name="com.falsepattern.zigbrains.cidr" loading="optional"/>
+        <module name="com.falsepattern.zigbrains.clion" loading="optional"/>
+    </content>
 </idea-plugin>

@@ -139,14 +139,15 @@ dependencies {
         if (lspCompat) {
             plugin(lsp4ijPluginString)
         }
-    }
-
-    runtimeOnly(project(":core"))
-    if (cidrCompat) {
-        runtimeOnly(project(":cidr"))
-    }
-    if (lspCompat) {
-        runtimeOnly(project(":lsp"))
+        pluginModule(runtimeOnly(project(":lang")))
+        pluginModule(runtimeOnly(project(":core")))
+        if (cidrCompat) {
+            pluginModule(runtimeOnly(project(":cidr")))
+            pluginModule(runtimeOnly(project(":clion")))
+        }
+        if (lspCompat) {
+            pluginModule(runtimeOnly(project(":lsp")))
+        }
     }
 }
 

@@ -31,7 +31,7 @@ dependencies {
             useInstaller = useInstallerProp
         }
         bundledPlugins("com.intellij.nativeDebug")
-        bundledModules("intellij.clion.toolchains", "intellij.clion.execution", "intellij.cidr.workspaceModel")
+        bundledModules("intellij.cidr.workspaceModel")
     }
     implementation(project(":core")) {
         isTransitive = false
@@ -55,4 +55,8 @@ tasks {
     compileJava {
         enabled = false
     }
+}
+
+tasks.composedJar {
+    archiveFileName = "com.falsepattern.zigbrains.cidr.jar"
 }
