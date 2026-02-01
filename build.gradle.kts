@@ -9,8 +9,8 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
-    kotlin("jvm") version "2.1.20" apply false
-    kotlin("plugin.serialization") version "2.1.20" apply false
+    kotlin("jvm") version "2.2.20" apply false
+    kotlin("plugin.serialization") version "2.2.20" apply false
     id("org.jetbrains.intellij.platform") version "2.11.0"
     id("org.jetbrains.changelog") version "2.5.0"
     id("org.jetbrains.grammarkit") version "2023.3.0.1" apply false
@@ -126,7 +126,7 @@ allprojects {
 dependencies {
     intellijPlatform {
         when(runIdeTarget) {
-            "ideaCommunity" -> create(IntelliJPlatformType.IntellijIdeaCommunity, ideaCommunityVersion) {
+            "ideaCommunity" -> create(IntelliJPlatformType.IntellijIdea, ideaCommunityVersion) {
                 useInstaller = useInstallerProp
             }
             "clion" -> create(IntelliJPlatformType.CLion, clionVersion) {
@@ -199,8 +199,7 @@ intellijPlatform {
         ides {
             select {
                 types = listOf(
-                    IntelliJPlatformType.IntellijIdeaCommunity,
-                    IntelliJPlatformType.IntellijIdeaUltimate,
+                    IntelliJPlatformType.IntellijIdea,
                     IntelliJPlatformType.CLion
                 )
             }

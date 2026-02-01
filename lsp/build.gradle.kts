@@ -14,7 +14,7 @@ val lsp4ijPluginString = "com.redhat.devtools.lsp4ij:$lsp4ijVersion${if (lsp4ijN
 
 dependencies {
     intellijPlatform {
-        create(IntelliJPlatformType.IntellijIdeaCommunity, ideaCommunityVersion) {
+        create(IntelliJPlatformType.IntellijIdea, ideaCommunityVersion) {
             useInstaller = useInstallerProp
         }
         if (lsp4ijNightly) {

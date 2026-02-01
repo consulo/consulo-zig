@@ -25,14 +25,14 @@ package com.falsepattern.zigbrains.clion
 import com.intellij.openapi.project.Project
 import com.jetbrains.cidr.project.workspace.CidrWorkspace
 import com.jetbrains.cidr.project.workspace.OCRootsSynchronizer
+import org.jetbrains.annotations.NonNls
 import java.io.File
 
 class ZigWorkspace(project: Project) : CidrWorkspace(project) {
-    override fun collectRootsInfo(p0: File?): OCRootsSynchronizer.RootsInfo {
+    override fun collectRootsInfo(contentRoot: File?): OCRootsSynchronizer.RootsInfo {
         return OCRootsSynchronizer.RootsInfo()
     }
 
-    override fun getClientKey(): String {
-        return "ZIG_WORKSPACE"
-    }
+    override val clientKey: @NonNls String
+        get() = "ZIG_WORKSPACE"
 }

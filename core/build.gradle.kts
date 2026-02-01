@@ -13,7 +13,7 @@ val serializationVersion: String by project
 
 dependencies {
     intellijPlatform {
-        create(IntelliJPlatformType.IntellijIdeaCommunity, ideaCommunityVersion) {
+        create(IntelliJPlatformType.IntellijIdea, ideaCommunityVersion) {
             useInstaller = useInstallerProp
         }
 		bundledModule("intellij.spellchecker")
