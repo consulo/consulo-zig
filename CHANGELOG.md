@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Implementation
+  - The plugin now uses the Modular Plugin system on IDEA 2025.3+
+
+### Added
+
+- Support for IDEA 2025.3 and 2026.1
+
+- Debugger
+  - Support LLDB and GDB on Windows
+
 ### Fixed
 
 - Zig
