@@ -33,6 +33,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.StringEscapesTokenTypes
 import com.intellij.util.MathUtil
 import kotlin.math.max
+import kotlin.math.min
 
 
 fun getTextRangeBounds(contentRanges: List<TextRange>): TextRange =
@@ -73,7 +74,7 @@ fun CharSequence.getMultilineContent(startMark: String): List<TextRange> {
             result.add(
                 TextRange(
                     stringStart,
-                    kotlin.math.min((textLength - 1), (i + 1))
+                    min((textLength - 1), (i + 1))
                 )
             )
         } else if (cI == '\n') {
@@ -81,7 +82,7 @@ fun CharSequence.getMultilineContent(startMark: String): List<TextRange> {
             result.add(
                 TextRange(
                     stringStart,
-                    kotlin.math.min((textLength - 1), (i + 1))
+                    min((textLength - 1), (i + 1))
                 )
             )
         }

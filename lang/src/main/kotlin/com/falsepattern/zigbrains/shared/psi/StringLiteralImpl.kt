@@ -30,7 +30,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.childLeafs
 import com.intellij.psi.util.elementType
 import com.intellij.util.asSafely
@@ -72,7 +71,7 @@ interface StringLiteralImpl: PsiElement, StringLiteral {
     }
 
     override fun createLiteralTextEscaper(): LiteralTextEscaper<out StringLiteral> {
-        return object: com.intellij.psi.LiteralTextEscaper<StringLiteral>(this) {
+        return object: LiteralTextEscaper<StringLiteral>(this) {
             private var _text: String? = null
             private var _contentRanges: List<TextRange>? = null
 

@@ -31,6 +31,9 @@ dependencies {
     implementation(project(":core")) {
         isTransitive = false
     }
+    implementation(project(":lang")) {
+        isTransitive = false
+    }
 }
 
 tasks {

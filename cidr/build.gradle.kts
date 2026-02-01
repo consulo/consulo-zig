@@ -36,6 +36,9 @@ dependencies {
     implementation(project(":core")) {
         isTransitive = false
     }
+    implementation(project(":lang")) {
+        isTransitive = false
+    }
     implementation("org.eclipse.lsp4j:org.eclipse.lsp4j.debug:$lsp4jVersion") {
         exclude("org.eclipse.lsp4j", "org.eclipse.lsp4j")
         exclude("org.eclipse.lsp4j", "org.eclipse.lsp4j.jsonrpc")
