@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Zig
+  - Commenting last line in a file threw an exception ([codeberg#1](https://codeberg.org/FalsePattern/zigbrains/issues/1))
+
 ## [28.3.0] - 2026-01-11
 
 ### Fixed

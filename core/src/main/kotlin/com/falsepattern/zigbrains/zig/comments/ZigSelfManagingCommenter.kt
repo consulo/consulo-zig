@@ -233,7 +233,11 @@ class ZigSelfManagingCommenter: SelfManagingCommenter<ZigCommenterDataHolder>, C
 
 	private fun isLineEmpty(document: Document, line: Int, startOffset: Int = document.getLineStartOffset(line), endOffset: Int = document.getLineEndOffset(line)): Boolean {
 		val sequence = document.immutableCharSequence
+        val len = sequence.length
 		for (offset in startOffset..endOffset) {
+            if (offset >= len) {
+                break
+            }
 			if (!sequence[offset].isWhitespace())
 				return false
 		}
