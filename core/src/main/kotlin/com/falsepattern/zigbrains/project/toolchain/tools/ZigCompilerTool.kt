@@ -25,16 +25,17 @@ package com.falsepattern.zigbrains.project.toolchain.tools
 import com.falsepattern.zigbrains.project.toolchain.base.ZigToolchain
 import com.falsepattern.zigbrains.shared.psi.decodeTextContent
 import com.falsepattern.zigbrains.zon.ZonLanguage
-import com.falsepattern.zigbrains.zon.parser.ZonParserDefinition
 import com.falsepattern.zigbrains.zon.psi.ZonExpr
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.util.childrenOfType
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.nio.file.Path
+import kotlin.time.Duration.Companion.seconds
 
 class ZigCompilerTool(toolchain: ZigToolchain) : ZigTool(toolchain) {
     override val toolName: String
@@ -52,9 +53,11 @@ class ZigCompilerTool(toolchain: ZigToolchain) : ZigTool(toolchain) {
             //Try parsing as zon
             try {
                 val fileFactory = PsiFileFactory.getInstance(project ?: ProjectManager.getInstance().defaultProject)
-                val psi = readAction {
-                    fileFactory.createFileFromText(ZonLanguage, stdout)
-                }
+                val psi = withTimeoutOrNull(1.seconds) {
+                    readAction {
+                        fileFactory.createFileFromText(ZonLanguage, stdout)
+                    }
+                } ?: throw IllegalStateException("Timed out trying to acquire read action after 1 second, bailing out!")
                 val rootList = psi.childrenOfType<ZonExpr>().firstOrNull()?.initList?.fieldInitList ?: throw IllegalArgumentException()
                 val theMap = HashMap<String, String>()
                 for (field in rootList) {
