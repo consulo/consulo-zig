@@ -129,4 +129,4 @@ class ZigIPCService(val project: Project) {
     }
 }
 
-val Project.ipc get() = if (IPCUtil.haveIPC) service<ZigIPCService>() else null
+suspend fun Project.ipc(): ZigIPCService? = if (IPCUtil.haveIPC()) service<ZigIPCService>() else null

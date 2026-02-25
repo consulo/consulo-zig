@@ -25,6 +25,7 @@ package com.falsepattern.zigbrains.project.toolchain.tools
 import com.falsepattern.zigbrains.project.toolchain.base.ZigToolchain
 import com.falsepattern.zigbrains.shared.psi.decodeTextContent
 import com.falsepattern.zigbrains.zon.ZonLanguage
+import com.falsepattern.zigbrains.zon.parser.ZonParserDefinition
 import com.falsepattern.zigbrains.zon.psi.ZonExpr
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
@@ -50,17 +51,18 @@ class ZigCompilerTool(toolchain: ZigToolchain) : ZigTool(toolchain) {
         } catch (e: SerializationException) {
             //Try parsing as zon
             try {
-                val theMap = readAction {
-                    val psi = PsiFileFactory.getInstance(project ?: ProjectManager.getInstance().defaultProject).createFileFromText(ZonLanguage, stdout)
-                    val rootList = psi.childrenOfType<ZonExpr>().firstOrNull()?.initList?.fieldInitList ?: throw IllegalArgumentException()
-                    val theMap = HashMap<String, String>()
-                    for (field in rootList) {
-                        val value = field.expr.stringLiteral?.decodeTextContent() ?: continue
-                        val ident = field.identifier.text
-                        theMap[ident] = value
-                    }
-                    theMap
+                val fileFactory = PsiFileFactory.getInstance(project ?: ProjectManager.getInstance().defaultProject)
+                val psi = readAction {
+                    fileFactory.createFileFromText(ZonLanguage, stdout)
                 }
+                val rootList = psi.childrenOfType<ZonExpr>().firstOrNull()?.initList?.fieldInitList ?: throw IllegalArgumentException()
+                val theMap = HashMap<String, String>()
+                for (field in rootList) {
+                    val value = field.expr.stringLiteral?.decodeTextContent() ?: continue
+                    val ident = field.identifier.text
+                    theMap[ident] = value
+                }
+                theMap
                 val deserialized = ZigToolchainEnvironmentSerializable(
                     theMap.getZonOrThrow("zig_exe"),
                     theMap.getZonOrThrow("std_dir"),

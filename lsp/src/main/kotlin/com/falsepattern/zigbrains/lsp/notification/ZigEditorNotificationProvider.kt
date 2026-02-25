@@ -25,6 +25,7 @@ package com.falsepattern.zigbrains.lsp.notification
 import com.falsepattern.zigbrains.lsp.ZLSBundle
 import com.falsepattern.zigbrains.lsp.zls.zls
 import com.falsepattern.zigbrains.lsp.zlsRunning
+import com.falsepattern.zigbrains.shared.coroutine.runModalOrBlocking
 import com.falsepattern.zigbrains.shared.zigCoroutineScope
 import com.falsepattern.zigbrains.zig.ZigFileType
 import com.falsepattern.zigbrains.zon.ZonFileType
@@ -32,10 +33,10 @@ import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import java.util.function.Function
 import javax.swing.JComponent
 
@@ -60,7 +61,7 @@ class ZigEditorNotificationProvider: EditorNotificationProvider, DumbAware {
             val text: String
             var actionLabel: String? = null
             var actionId: String? = null
-            val result = runBlocking { task.await() }
+            val result = runModalOrBlocking({ ModalTaskOwner.project(project) }, { "Collecting notification data" }) { task.await() }
             if (result == null)
                 return@Function null
 

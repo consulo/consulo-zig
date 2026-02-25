@@ -76,7 +76,7 @@ import javax.swing.tree.TreePath
 
 
 @OptIn(ExperimentalUnsignedTypes::class)
-class BuildToolWindowContext(private val project: Project): Disposable {
+class BuildToolWindowContext private constructor(private val project: Project): Disposable {
     inner class TreeBox() {
         val panel = JPanel(VerticalLayout(0))
         val root = DefaultMutableTreeNode(BaseNodeDescriptor<Any>(project, ""))
@@ -85,10 +85,11 @@ class BuildToolWindowContext(private val project: Project): Disposable {
     }
     private val viewPanel = JPanel(VerticalLayout(0))
     private val stepsBox = TreeBox()
-    private val buildBox = if (IPCUtil.haveIPC) TreeBox() else null
+    private var buildBox: TreeBox? = null
     private var live = AtomicBoolean(true)
 
-    init {
+    suspend fun init() {
+        buildBox = if (IPCUtil.haveIPC()) TreeBox() else null
         viewPanel.add(JBLabel(ZigBrainsBundle.message("build.tool.window.tree.steps.label")))
         viewPanel.add(stepsBox.panel)
         stepsBox.panel.setRunningBuildScan()
@@ -116,6 +117,7 @@ class BuildToolWindowContext(private val project: Project): Disposable {
             }
         })
 
+        val buildBox = this.buildBox
         if (buildBox != null) {
             viewPanel.add(JBLabel(ZigBrainsBundle.message("build.tool.window.tree.build.label")))
             viewPanel.add(buildBox.panel)
@@ -123,7 +125,7 @@ class BuildToolWindowContext(private val project: Project): Disposable {
 
             project.zigCoroutineScope.launch {
                 while (!project.isDisposed && live.get()) {
-                    val ipc = project.ipc ?: return@launch
+                    val ipc = project.ipc() ?: return@launch
                     withTimeoutOrNull(1000) {
                         ipc.changed.receive()
                     } ?: continue
@@ -206,6 +208,7 @@ class BuildToolWindowContext(private val project: Project): Disposable {
         suspend fun create(project: Project, window: ToolWindow) {
             withEDTContext(ModalityState.any()) {
                 val context = BuildToolWindowContext(project)
+                context.init()
                 Disposer.register(context, project.zigBuildScan.register(context.BuildReloadListener()))
                 Disposer.register(window.disposable, context)
                 window.contentManager.addContent(context.createContentPanel())

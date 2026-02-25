@@ -23,6 +23,7 @@
 package com.falsepattern.zigbrains.debugger.dap
 
 import com.falsepattern.zigbrains.project.run.ZigProcessHandler
+import com.falsepattern.zigbrains.shared.coroutine.runBlockingCancellableSafe
 import com.falsepattern.zigbrains.shared.sanitizedToNioPath
 import com.falsepattern.zigbrains.shared.zigCoroutineScope
 import com.intellij.execution.ExecutionException
@@ -65,7 +66,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.asDeferred
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.eclipse.lsp4j.debug.Breakpoint
 import org.eclipse.lsp4j.debug.BreakpointEventArguments
 import org.eclipse.lsp4j.debug.BreakpointEventArgumentsReason
@@ -281,7 +281,7 @@ abstract class DAPDriver<Server : IDebugProtocolServer, Client : IDebugProtocolC
             args["args"] = params
         }
         server.launch(args).getSafe()
-        runBlocking {
+        runBlockingCancellableSafe {
             initializeFuture.join()
         }
         return DAPInferior()
@@ -846,7 +846,7 @@ abstract class DAPDriver<Server : IDebugProtocolServer, Client : IDebugProtocolC
     }
 
     override fun disassemble(range: AddressRange): List<LLInstruction> {
-        return runBlocking {
+        return runBlockingCancellableSafe {
             disassembleSuspend(range)
         }
     }

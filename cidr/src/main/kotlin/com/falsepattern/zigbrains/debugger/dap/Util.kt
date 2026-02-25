@@ -224,9 +224,9 @@ object Util {
             val text = readAction {
                 val file = VfsUtil.findFile(path, true) ?: return@readAction null
                 val doc: Document = file.findDocument() ?: return@readAction null
-                doc.immutableCharSequence.toString().split("(\r\n|\r|\n)".toRegex()).dropLastWhile { it.isEmpty() }
-                    .toTypedArray()
-            }
+                doc.immutableCharSequence
+            }?.toString()?.split("(\r\n|\r|\n)".toRegex())?.dropLastWhile { it.isEmpty() }
+                ?.toTypedArray()
             if (text == null) return@run
             startLine -= 1
             endLine -= 1

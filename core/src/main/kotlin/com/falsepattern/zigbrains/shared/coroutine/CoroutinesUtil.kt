@@ -25,6 +25,9 @@ package com.falsepattern.zigbrains.shared.coroutine
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.asContextElement
+import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.runBlockingCancellable
 import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.TaskCancellation
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
@@ -39,14 +42,29 @@ import kotlinx.coroutines.withContext
 import java.awt.Component
 import kotlin.coroutines.CoroutineContext
 
+private object CoroutinesUtil
+
+@PublishedApi
+internal val LOG = logger<CoroutinesUtil>()
+
 inline fun <T> runModalOrBlocking(taskOwnerFactory: () -> ModalTaskOwner, titleFactory: () -> String, cancellationFactory: () -> TaskCancellation = {TaskCancellation.cancellable()}, noinline action: suspend CoroutineScope.() -> T): T {
     return if (application.isDispatchThread) {
         runWithModalProgressBlocking(taskOwnerFactory(), titleFactory(), cancellationFactory(), action)
     } else {
-        runBlocking(block = action)
+        LOG.info("runBlockingCancellable fallback", Throwable())
+        runBlockingCancellableSafe(action = action)
     }
 }
 
+inline fun <T> runBlockingCancellableSafe(noinline action: suspend CoroutineScope.() -> T): T {
+    val indicator = ProgressManager.getGlobalProgressIndicator()
+    return if (indicator != null) {
+        runBlockingCancellable(action = action)
+    } else {
+        LOG.info("runBlocking fallback", Throwable())
+        runBlocking(block = action)
+    }
+}
 suspend inline fun <T> withEDTContext(state: ModalityState, noinline block: suspend CoroutineScope.() -> T): T {
     return withEDTContext(state.asContextElement(), block = block)
 }

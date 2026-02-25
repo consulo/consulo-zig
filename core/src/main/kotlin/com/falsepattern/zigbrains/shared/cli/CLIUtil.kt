@@ -143,7 +143,7 @@ suspend fun GeneralCommandLine.startIPCAwareProcess(project: Project?, emulateTe
     ProcessTerminatedListener.attach(handler)
 
     if (ipc != null) {
-        project!!.ipc?.launchWatcher(ipc, handler.process)
+        project!!.ipc()?.launchWatcher(ipc, handler.process)
     }
     return handler
 }

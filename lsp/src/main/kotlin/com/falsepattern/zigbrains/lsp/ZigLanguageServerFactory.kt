@@ -23,14 +23,13 @@
 package com.falsepattern.zigbrains.lsp
 
 import com.falsepattern.zigbrains.lsp.zls.zls
+import com.falsepattern.zigbrains.shared.coroutine.runModalOrBlocking
 import com.falsepattern.zigbrains.shared.zigCoroutineScope
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.platform.ide.progress.ModalTaskOwner
-import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiFile
-import com.intellij.util.application
 import com.redhat.devtools.lsp4ij.LanguageServerEnablementSupport
 import com.redhat.devtools.lsp4ij.LanguageServerFactory
 import com.redhat.devtools.lsp4ij.LanguageServerManager
@@ -41,21 +40,18 @@ import com.redhat.devtools.lsp4ij.client.features.LSPFormattingFeature
 import com.redhat.devtools.lsp4ij.client.features.LSPInlayHintFeature
 import com.redhat.devtools.lsp4ij.client.features.LSPSelectionRangeFeature
 import com.redhat.devtools.lsp4ij.server.StreamConnectionProvider
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import org.eclipse.lsp4j.CodeAction
 
 class ZigLanguageServerFactory: LanguageServerFactory, LanguageServerEnablementSupport {
     override fun createConnectionProvider(project: Project): StreamConnectionProvider {
-        return if (application.isDispatchThread) {
-            runWithModalProgressBlocking(ModalTaskOwner.project(project), ZLSBundle.message("progress.title.create-connection-provider")) {
-                ZLSStreamConnectionProvider.create(project)
-            }
-        } else {
-            runBlocking {
+        return runModalOrBlocking({ ModalTaskOwner.project(project) }, { ZLSBundle.message("progress.title.create-connection-provider") }) {
+            withContext(Dispatchers.IO) {
                 ZLSStreamConnectionProvider.create(project)
             }
         }

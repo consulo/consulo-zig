@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Implementation
+  - Replaced several runBlocking-based coroutine dispatches with non-blocking alternatives or progress indicator aware alternatives
+  - Reduced the scope of read actions to decrease the chance of UI freezes (https://codeberg.org/FalsePattern/zigbrains/issues/3)
+
+
 ## [29.0.0] - 2026-02-01
 
 ### Changed

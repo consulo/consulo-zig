@@ -33,7 +33,8 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.nio.charset.Charset
 import java.nio.file.Path
 import kotlin.io.path.deleteIfExists
@@ -44,14 +45,30 @@ import kotlin.io.path.inputStream
  */
 object IPCUtil {
 
-    val haveIPC: Boolean get() = info != null
+    suspend fun haveIPC(): Boolean {
+        return info() != null
+    }
 
     @JvmRecord
     data class IPCInfo(val mkfifo: MKFifo, val bash: String)
 
-    private val info: IPCInfo? by lazy { runBlocking {
-        createInfo()
-    } }
+    @Volatile
+    private var infoInit: Boolean = false
+    private var _info: IPCInfo? = null
+    private val infoMutex = Mutex()
+    private suspend fun info(): IPCInfo? {
+        if (!infoInit) {
+            infoMutex.withLock {
+                if (!infoInit) {
+                    val res = createInfo()
+                    _info = res
+                    infoInit = true
+                    return res
+                }
+            }
+        }
+        return _info
+    }
 
     private suspend fun createInfo(): IPCInfo? {
         if (SystemInfo.isWindows) {
@@ -96,13 +113,13 @@ object IPCUtil {
     }
 
     suspend fun wrapWithIPC(cli: GeneralCommandLine): IPC? {
-        if (!haveIPC)
+        if (!haveIPC())
             return null
-        val (fifoFile, fifo) = info!!.mkfifo.createTemp() ?: return null
+        val (fifoFile, fifo) = _info!!.mkfifo.createTemp() ?: return null
         //FIFO created, hack cli
         val exePath = cli.exePath
         val args = "exec {var}>${fifoFile.sanitizedPathString!!}; ZIG_PROGRESS=\$var $exePath ${cli.parametersList.parametersString}; ZB_EXIT=\$?; exec {var}>&-; exit \$ZB_EXIT"
-        cli.withExePath(info!!.bash)
+        cli.withExePath(_info!!.bash)
         cli.parametersList.clearAll()
         cli.addParameters("-c", args)
         return IPC(cli, fifoFile, fifo)
