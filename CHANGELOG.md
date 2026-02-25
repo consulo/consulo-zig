@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [29.0.1] - 2026-02-25
+
 ### Changed
 
 - Implementation
@@ -11,7 +13,7 @@
 ### Fixed
 
 - Toolchain
- - IPC-based progress display now works with zig 0.16
+  - IPC-based progress display now works with zig 0.16
 
 ## [29.0.0] - 2026-02-01
 
