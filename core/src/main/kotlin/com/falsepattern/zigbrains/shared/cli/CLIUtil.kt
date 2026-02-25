@@ -24,6 +24,7 @@ package com.falsepattern.zigbrains.shared.cli
 
 import com.falsepattern.zigbrains.ZigBrainsBundle
 import com.falsepattern.zigbrains.project.run.ZigProcessHandler
+import com.falsepattern.zigbrains.project.toolchain.ZigToolchainService
 import com.falsepattern.zigbrains.shared.ipc.IPCUtil
 import com.falsepattern.zigbrains.shared.ipc.ipc
 import com.intellij.execution.ExecutionException
@@ -34,6 +35,7 @@ import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.project.Project
 import com.intellij.util.io.awaitExit
 import com.intellij.util.system.OS
+import com.intellij.util.text.SemVer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
@@ -135,6 +137,9 @@ fun createCommandLineSafe(
 suspend fun GeneralCommandLine.startIPCAwareProcess(project: Project?, emulateTerminal: Boolean = false): ZigProcessHandler.IPCAware {
     val original = this.commandLineString
     val ipc = if (project != null && !emulateTerminal) IPCUtil.wrapWithIPC(this) else null
+    val zigVersion = if (ipc != null)
+        project?.let { ZigToolchainService.getInstance(it) }?.toolchain?.zig?.getEnv(project)?.getOrNull()?.version?.let { SemVer.parseFromText(it) }
+    else null
     val cli = ipc?.cli ?: this
     if (emulateTerminal && OS.CURRENT != OS.Windows && !cli.environment.contains("TERM")) {
         cli.withEnvironment("TERM", "xterm-256color")
@@ -143,7 +148,7 @@ suspend fun GeneralCommandLine.startIPCAwareProcess(project: Project?, emulateTe
     ProcessTerminatedListener.attach(handler)
 
     if (ipc != null) {
-        project!!.ipc()?.launchWatcher(ipc, handler.process)
+        project!!.ipc()?.launchWatcher(ipc, handler.process, zigVersion)
     }
     return handler
 }

@@ -8,6 +8,10 @@
   - Replaced several runBlocking-based coroutine dispatches with non-blocking alternatives or progress indicator aware alternatives
   - Reduced the scope of read actions to decrease the chance of UI freezes (https://codeberg.org/FalsePattern/zigbrains/issues/3)
 
+### Fixed
+
+- Toolchain
+ - IPC-based progress display now works with zig 0.16
 
 ## [29.0.0] - 2026-02-01
 

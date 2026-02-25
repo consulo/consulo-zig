@@ -30,6 +30,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import com.intellij.util.text.SemVer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -67,15 +68,17 @@ class ZigIPCService(val project: Project) {
     val nodes = ArrayList<IPCTreeNode>()
     val changed = Channel<Unit>(1)
     val mutex = Mutex()
+    val oldIPCMaxVer = SemVer("0.15.${Int.MAX_VALUE}", 0, 15, Int.MAX_VALUE)
 
-    private fun DataInput.readRoots(): List<Payload> {
+    private fun DataInput.readRoots(zigVersion: SemVer?): List<Payload> {
         val len = readByte().toUByte().toInt()
-        val payloads = Array<Payload>(len) {
-            readPayload()
+        //Zig 0.16 IPC uses 120 bytes for names, 0.15 and before uses 40 bytes
+        val nameLength = zigVersion?.let { if (it.isGreaterThan(oldIPCMaxVer)) 120 else 40 } ?: 120
+        val payloads = Array(len) {
+            readPayload(nameLength)
         }
-        val parents = ByteArray(len) {
-            readByte()
-        }
+        val parents = ByteArray(len)
+        readFully(parents)
 
         val roots = ArrayList<Payload>()
         for (i in 0..len - 1) {
@@ -90,7 +93,7 @@ class ZigIPCService(val project: Project) {
         return roots
     }
 
-    private suspend fun watch(ipc: IPC, process: Process) {
+    private suspend fun watch(ipc: IPC, process: Process, zigVersion: SemVer?) {
         val currentNode = IPCTreeNode(BaseNodeDescriptor<Any>(project, "pid: ${process.pid()}", AllIcons.Actions.InlayGear))
         mutex.withLock {
             nodes.add(currentNode)
@@ -99,7 +102,7 @@ class ZigIPCService(val project: Project) {
             try {
                 LittleEndianDataInputStream(BufferedInputStream(ipc.fifoPath.inputStream())).use { fifo ->
                     while (!project.isDisposed && process.isAlive) {
-                        val roots = fifo.readRoots()
+                        val roots = fifo.readRoots(zigVersion)
                         mutex.withLock {
                             for ((id, root) in roots.withIndex()) {
                                 root.addWithChildren(project, currentNode, id)
@@ -122,9 +125,9 @@ class ZigIPCService(val project: Project) {
         }
     }
 
-    fun launchWatcher(ipc: IPC, process: Process) {
+    fun launchWatcher(ipc: IPC, process: Process, zigVersion: SemVer?) {
         project.zigCoroutineScope.launch {
-            watch(ipc, process)
+            watch(ipc, process, zigVersion)
         }
     }
 }

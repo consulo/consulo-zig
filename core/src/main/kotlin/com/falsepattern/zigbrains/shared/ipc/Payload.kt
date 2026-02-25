@@ -29,12 +29,11 @@ import java.io.DataInput
 
 data class Payload(val completed: UInt, val estimatedTotal: UInt, val name: String, var children: ArrayList<Payload> = ArrayList()) {
     companion object {
-        fun DataInput.readPayload(): Payload {
+        fun DataInput.readPayload(nameLength: Int): Payload {
             val completed = readInt().toUInt()
             val estimatedTotal = readInt().toUInt()
-            val name = ByteArray(40) {
-                readByte()
-            }
+            val name = ByteArray(nameLength)
+            readFully(name)
             val length = name.indexOf(0).let { if (it == -1) 40 else it }
             val nameText = String(name, 0, length)
             return Payload(completed, estimatedTotal, nameText)
