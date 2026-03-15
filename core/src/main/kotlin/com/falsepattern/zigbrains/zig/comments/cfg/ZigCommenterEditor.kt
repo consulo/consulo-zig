@@ -64,7 +64,7 @@ class ZigCommenterEditor: SubConfigurable<Project> {
         }
 
         override val index: Int
-            get() = 200
+            get() = 300
 
     }
 }

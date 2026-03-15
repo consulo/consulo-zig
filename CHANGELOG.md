@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Added
+
+- Zig
+  - Config option for limiting the maximum size of syntax-aware newline indenting
+
+### Fixed
+
+- Zig
+  - Long IDE freeze when editing huge files (see above)
+
 ## [29.0.1] - 2026-02-25
 
 ### Changed

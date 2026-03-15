@@ -67,6 +67,8 @@
                 implementationClass="com.falsepattern.zigbrains.zig.spellchecker.ZigSpellcheckingStrategy"/>
         <spellchecker.bundledDictionaryProvider
                 implementation="com.falsepattern.zigbrains.zig.spellchecker.ZigBundledDictionaryProvider"/>
+
+        <lineIndentProvider implementation="com.falsepattern.zigbrains.zig.formatter.ZigLineIndentProvider"/>
     </extensions>
     <!-- endregion Zig -->
 
@@ -226,6 +228,9 @@
         />
         <projectConfigProvider
                 implementation="com.falsepattern.zigbrains.direnv.ui.DirenvEditor$Provider"
+        />
+        <projectConfigProvider
+                implementation="com.falsepattern.zigbrains.zig.formatter.cfg.ZigFormatterEditor$Provider"
         />
         <projectConfigProvider
                 implementation="com.falsepattern.zigbrains.zig.comments.cfg.ZigCommenterEditor$Provider"
