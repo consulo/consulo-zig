@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Removed
+
+- Debugger
+  - Removed MSVC debugger support. It was a hard to maintain, buggy mess.
+
 ### Fixed
 
 - Internals
