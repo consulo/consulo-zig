@@ -27,13 +27,10 @@ import com.falsepattern.zigbrains.debugger.toolchain.DebuggerAvailability
 import com.falsepattern.zigbrains.debugger.toolchain.DebuggerKind
 import com.falsepattern.zigbrains.debugger.toolchain.GDBBinaries
 import com.falsepattern.zigbrains.debugger.toolchain.LLDBBinaries
-import com.falsepattern.zigbrains.debugger.toolchain.MSVCBinaries
 import com.falsepattern.zigbrains.debugger.toolchain.ZigDebuggerToolchainService
 import com.falsepattern.zigbrains.debugger.toolchain.zigDebuggerToolchainService
-import com.falsepattern.zigbrains.debugger.win.MSVCDriverConfiguration
 import com.falsepattern.zigbrains.shared.coroutine.withEDTContext
 import com.falsepattern.zigbrains.shared.sanitizedPathString
-import com.falsepattern.zigbrains.zig.ZigLanguage
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DoNotAskOption
@@ -57,12 +54,10 @@ class ZigDefaultDebuggerDriverConfigurationProvider: ZigDebuggerDriverConfigurat
             DebuggerAvailability.Bundled -> when(kind) {
                 DebuggerKind.LLDB -> ZigLLDBDriverConfiguration(isElevated, emulateTerminal)
                 DebuggerKind.GDB -> ZigGDBDriverConfiguration(isElevated, emulateTerminal)
-                DebuggerKind.MSVC -> throw AssertionError("MSVC is never bundled")
             }
             is DebuggerAvailability.Binaries -> when(val binary = availability.binaries) {
                 is LLDBBinaries -> ZigCustomBinariesLLDBDriverConfiguration(binary, isElevated, emulateTerminal)
                 is GDBBinaries -> ZigCustomBinariesGDBDriverConfiguration(binary, isElevated, emulateTerminal)
-                is MSVCBinaries -> ZigMSVCDriverConfiguration(binary, isElevated, emulateTerminal)
                 else -> throw AssertionError("Unreachable")
             }
             DebuggerAvailability.Unavailable,
@@ -148,16 +143,4 @@ private class ZigCustomBinariesGDBDriverConfiguration(
     emulateTerminal: Boolean
 ) : ZigGDBDriverConfiguration(isElevated, emulateTerminal) {
     override fun getGDBExecutablePath() = binaries.gdbFile.sanitizedPathString!!
-}
-
-private class ZigMSVCDriverConfiguration(
-    private val binaries: MSVCBinaries,
-    private val isElevated: Boolean,
-    private val emulateTerminal: Boolean
-): MSVCDriverConfiguration() {
-    override val debuggerExecutable get() = binaries.msvcFile
-    override fun getDriverName() = "Zig MSVC"
-    override fun getConsoleLanguage() = ZigLanguage
-    override fun isElevated() = isElevated
-    override fun emulateTerminal() = emulateTerminal
 }

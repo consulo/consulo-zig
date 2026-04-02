@@ -22,14 +22,11 @@
 
 package com.falsepattern.zigbrains.debugger.toolchain
 
-import com.intellij.openapi.util.SystemInfo
-
 enum class DebuggerKind {
     LLDB,
-    GDB,
-    MSVC;
+    GDB;
 
     companion object {
-        val default get() = if (SystemInfo.isWindows) MSVC else LLDB
+        val default get() = LLDB
     }
 }

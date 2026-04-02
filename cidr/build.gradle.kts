@@ -1,29 +1,9 @@
-import de.undercouch.gradle.tasks.download.Download
 import org.jetbrains.intellij.platform.gradle.Constants
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 
-plugins {
-    id("de.undercouch.download") version("5.6.0")
-}
 val lsp4jVersion: String by project
 val clionVersion: String by project
 val useInstallerProp = property("useInstaller").toString().toBoolean()
-
-val genOutputDir = layout.buildDirectory.dir("generated-resources")
-sourceSets["main"].resources.srcDir(genOutputDir)
-
-tasks {
-    register<Download>("downloadProps") {
-        onlyIfModified(true)
-        useETag(true)
-        quiet(true)
-        src("https://falsepattern.com/zigbrains/msvc.properties")
-        dest(genOutputDir.map { it.file("msvc.properties") })
-    }
-    processResources {
-        dependsOn("downloadProps")
-    }
-}
 
 dependencies {
     intellijPlatform {
@@ -39,12 +19,7 @@ dependencies {
     implementation(project(":lang")) {
         isTransitive = false
     }
-    implementation("org.eclipse.lsp4j:org.eclipse.lsp4j.debug:$lsp4jVersion") {
-        exclude("org.eclipse.lsp4j", "org.eclipse.lsp4j")
-        exclude("org.eclipse.lsp4j", "org.eclipse.lsp4j.jsonrpc")
-        exclude("com.google.code.gson", "gson")
-    }
-    compileOnly("org.eclipse.lsp4j:org.eclipse.lsp4j:$lsp4jVersion")
+
 }
 configurations[Constants.Configurations.INTELLIJ_PLATFORM_BUNDLED_PLUGINS].dependencies.configureEach {
     if (this is ExternalModuleDependency) {

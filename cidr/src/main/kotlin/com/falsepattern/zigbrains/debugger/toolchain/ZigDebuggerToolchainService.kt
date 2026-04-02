@@ -33,12 +33,8 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.coroutineToIndicator
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.DialogBuilder
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.platform.util.progress.reportSequentialProgress
-import com.intellij.ui.BrowserHyperlinkListener
-import com.intellij.ui.HyperlinkLabel
-import com.intellij.ui.components.JBPanel
 import com.intellij.util.application
 import com.intellij.util.concurrency.annotations.RequiresEdt
 import com.intellij.util.download.DownloadableFileService
@@ -61,7 +57,6 @@ class ZigDebuggerToolchainService {
         return when(kind) {
             DebuggerKind.LLDB -> lldbAvailability()
             DebuggerKind.GDB -> gdbAvailability()
-            DebuggerKind.MSVC -> msvcAvailability()
         }
     }
 
@@ -115,23 +110,6 @@ class ZigDebuggerToolchainService {
         return DebuggerAvailability.Binaries(GDBBinaries(gdbFile))
     }
 
-    suspend fun msvcAvailability(): DebuggerAvailability<MSVCBinaries> {
-        if (!SystemInfo.isWindows) return DebuggerAvailability.Unavailable
-
-        val msvcBinaryPath = "vsdbg.exe"
-
-        val msvcFile = msvcPath().resolve(msvcBinaryPath)
-        if (!msvcFile.toFile().exists()) return DebuggerAvailability.NeedToDownload
-
-        val msvcUrl = msvcUrl() ?: return DebuggerAvailability.Binaries(MSVCBinaries(msvcFile))
-
-        val versions = loadDebuggerVersions(DebuggerKind.MSVC)
-
-        if (versions[MSVC_PROPERTY_NAME] != msvcUrl.version) return DebuggerAvailability.NeedToUpdate
-
-        return DebuggerAvailability.Binaries(MSVCBinaries(msvcFile))
-    }
-
     @RequiresEdt
     private suspend fun doDownloadDebugger(debuggerKind: DebuggerKind): DownloadResult {
         val baseDir = debuggerKind.basePath()
@@ -146,24 +124,6 @@ class ZigDebuggerToolchainService {
             DebuggerKind.GDB -> {
                 val gdbUrl = gdbUrl()?.run { toString() } ?: return DownloadResult.NoUrls
                 listOf(DownloadableDebuggerBinary(gdbUrl, GDB_PROPERTY_NAME, fileNameWithoutExtension(gdbUrl)))
-            }
-            DebuggerKind.MSVC -> {
-                val msvcUrl = msvcUrl() ?: return DownloadResult.NoUrls
-
-                val dialog = DialogBuilder()
-                dialog.setTitle(msvcUrl.dialogTitle)
-                dialog.addCancelAction().setText("Reject")
-                dialog.addOkAction().setText("Accept")
-                val centerPanel = JBPanel<JBPanel<*>>()
-                val hyperlink = HyperlinkLabel()
-                hyperlink.setTextWithHyperlink(msvcUrl.dialogBody)
-                hyperlink.setHyperlinkTarget(msvcUrl.dialogLink)
-                hyperlink.addHyperlinkListener(BrowserHyperlinkListener())
-                centerPanel.add(hyperlink)
-                dialog.centerPanel(centerPanel)
-                if (!dialog.showAndGet()) return DownloadResult.NoUrls
-
-                listOf(DownloadableDebuggerBinary(msvcUrl.url, MSVC_PROPERTY_NAME, msvcUrl.version, "extension/debugAdapters/vsdbg/bin"))
             }
         }
 
@@ -253,28 +213,6 @@ class ZigDebuggerToolchainService {
 
     private fun gdbUrl(): URL? = UrlProvider.gdb(OS.CURRENT, CpuArch.CURRENT)
 
-    private suspend fun msvcUrl(): MSVCUrl? {
-        val dlKey = when(CpuArch.CURRENT) {
-            CpuArch.X86 -> "downloadX86"
-            CpuArch.X86_64 -> "downloadX86_64"
-            CpuArch.ARM64 -> "downloadARM64"
-            else -> return null
-        }
-
-        val props = msvcMetadata()
-        val version = props.getProperty("version") ?: return null
-        val url = props.getProperty(dlKey) ?: return null
-        return MSVCUrl(url, version, props.getProperty("dialogTitle")!!, props.getProperty("dialogBody")!!, props.getProperty("dialogLink")!!)
-    }
-
-    private data class MSVCUrl(
-        val url: String,
-        val version: String,
-        val dialogTitle: String,
-        val dialogBody: String,
-        val dialogLink: String
-    )
-
     private fun loadDebuggerVersions(kind: DebuggerKind): Properties = loadVersions(kind.basePath())
 
     private fun saveVersionsFile(basePath: Path, versions: Properties) {
@@ -305,7 +243,6 @@ class ZigDebuggerToolchainService {
         return when(this) {
             DebuggerKind.LLDB -> lldbPath()
             DebuggerKind.GDB -> gdbPath()
-            DebuggerKind.MSVC -> msvcPath()
         }
     }
 
@@ -317,12 +254,10 @@ class ZigDebuggerToolchainService {
         private const val LLDB_FRONTEND_PROPERTY_NAME = "lldbFrontend"
         private const val LLDB_FRAMEWORK_PROPERTY_NAME = "lldbFramework"
         private const val GDB_PROPERTY_NAME = "gdb"
-        private const val MSVC_PROPERTY_NAME = "msvc"
 
         fun downloadPath() = tempPluginDir
         private fun lldbPath() = pluginDir.resolve("lldb")
         private fun gdbPath() = pluginDir.resolve("gdb")
-        private fun msvcPath() = pluginDir.resolve("msvc")
 
         private val pluginDir get() = PathManager.getSystemDir().resolve("zigbrains")
 

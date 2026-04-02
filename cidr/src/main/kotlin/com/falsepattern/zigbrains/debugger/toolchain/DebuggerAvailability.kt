@@ -34,4 +34,3 @@ sealed class DebuggerAvailability<out T> {
 
 data class LLDBBinaries(val frameworkFile: Path, val frontendFile: Path)
 data class GDBBinaries(val gdbFile: Path)
-data class MSVCBinaries(val msvcFile: Path)
