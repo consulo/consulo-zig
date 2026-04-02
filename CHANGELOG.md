@@ -6,6 +6,7 @@
 
 - Internals
   - Do not run modal progress dialog while in read lock
+  - Console highlighter throwing exception when parsing some lines
 
 ## [29.1.0] - 2026-03-15
 

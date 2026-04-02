@@ -31,6 +31,7 @@ import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.toNioPathOrNull
 import kotlinx.io.IOException
 import java.io.File
+import java.io.IOError
 import java.nio.file.InvalidPathException
 import java.nio.file.Path
 import kotlin.math.max
@@ -76,8 +77,7 @@ class ZigSourceFileFilter(private val project: Project): Filter {
                     }
                 }
                 return Pair(file.toPath(), i)
-            } catch (_: InvalidPathException) {
-            } catch (_: IOException) {
+            } catch (_: Throwable) {
             }
         }
         return null
