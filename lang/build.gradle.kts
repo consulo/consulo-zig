@@ -1,9 +1,9 @@
-import org.jetbrains.grammarkit.tasks.GenerateLexerTask
-import org.jetbrains.grammarkit.tasks.GenerateParserTask
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
+import org.jetbrains.intellij.platform.gradle.tasks.GenerateLexerTask
+import org.jetbrains.intellij.platform.gradle.tasks.GenerateParserTask
 
 plugins {
-    id("org.jetbrains.grammarkit")
+    id("org.jetbrains.intellij.platform.grammarkit")
 }
 
 val grammarIdeaVersion: String by project
