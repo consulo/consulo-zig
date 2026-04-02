@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [30.0.0] - 2026-04-02
+
 ### Removed
 
 - Debugger
