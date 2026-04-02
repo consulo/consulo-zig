@@ -48,7 +48,7 @@ private object CoroutinesUtil
 internal val LOG = logger<CoroutinesUtil>()
 
 inline fun <T> runModalOrBlocking(taskOwnerFactory: () -> ModalTaskOwner, titleFactory: () -> String, cancellationFactory: () -> TaskCancellation = {TaskCancellation.cancellable()}, noinline action: suspend CoroutineScope.() -> T): T {
-    return if (application.isDispatchThread) {
+    return if (application.isDispatchThread && !application.holdsReadLock()) {
         runWithModalProgressBlocking(taskOwnerFactory(), titleFactory(), cancellationFactory(), action)
     } else {
         LOG.info("runBlockingCancellable fallback", Throwable())

@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Internals
+  - Do not run modal progress dialog while in read lock
+
 ## [29.1.0] - 2026-03-15
 
 ### Added
