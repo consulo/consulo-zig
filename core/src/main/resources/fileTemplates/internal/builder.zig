@@ -159,7 +159,7 @@ pub fn build( b: *std.Build ) !void {
 		}
 	};
 
-	// process everuyhting to be serializable
+	// process everything to be serializable
 	var projects = try alloc.alloc( Serialization.Project, storage.projects.items.len );
 	for ( storage.projects.items, 0.. ) |proj, i| {
 		// post-process the dependencies
