@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [30.0.1] - 2026-04-18
+
 ### Fixed
 
 - Project
