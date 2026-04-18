@@ -260,6 +260,8 @@ fn gatherProjects( b: *std.Build, io: IoType, storage: *Storage, depName: []cons
 	// gather dependencies
 	const deps = try alloc.alloc( Storage.Dependency, b.available_deps.len );
 	{
+		const snapshot = try snapshotLazyDeps(b.graph);
+		defer restoreLazyDeps(b.graph, snapshot);
 		// we do not find the project index here, as that would introduce a dependency on resolving the... dependencies, which can be a problem in case of circular ones
 		for ( b.available_deps, 0.. ) |dep, i| {
 			// HACK: for now, ignore lazy dependencies
@@ -309,9 +311,22 @@ fn gatherProjects( b: *std.Build, io: IoType, storage: *Storage, depName: []cons
 	};
 
 	// visit the dependencies
-	for ( b.available_deps ) |dep| {
-		try gatherProjects( (b.lazyDependency( dep.@"0", .{ } ) orelse continue).builder, io, storage, dep.@"0", alloc );
+	{
+		const snapshot = try snapshotLazyDeps(b.graph);
+		defer restoreLazyDeps(b.graph, snapshot);
+		for ( b.available_deps ) |dep| {
+			try gatherProjects( (b.lazyDependency( dep.@"0", .{ } ) orelse continue).builder, io, storage, dep.@"0", alloc );
+		}
 	}
+}
+
+fn snapshotLazyDeps( graph: *std.Build.Graph ) !std.StringArrayHashMapUnmanaged(void) {
+	return try graph.needed_lazy_dependencies.clone(graph.arena);
+}
+
+fn restoreLazyDeps( graph: *std.Build.Graph, map: std.StringArrayHashMapUnmanaged(void) ) void {
+	graph.needed_lazy_dependencies.deinit(graph.arena);
+	graph.needed_lazy_dependencies = map;
 }
 
 fn discoverStepModules( step: *std.Build.Step, modules: *ArrayList(Storage.Module), alloc: std.mem.Allocator ) !void {

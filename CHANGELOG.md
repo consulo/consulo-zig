@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Project
+  - build.zig scan helper no longer downloads every single lazy dependency recursively (https://codeberg.org/FalsePattern/zigbrains/issues/7)
+
 ## [30.0.0] - 2026-04-02
 
 ### Removed
