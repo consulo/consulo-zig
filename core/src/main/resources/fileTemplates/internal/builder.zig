@@ -102,16 +102,16 @@ pub fn build( b: *std.Build ) !void {
 	defer arena.deinit();
 
 	// get the port environment variable
-    const port_str = if (envInGraph)
-        b.graph.environ_map.get("ZIGBRAINS_PORT") orelse return error.NoPortGiven
-    else
-        std.process.getEnvVarOwned(alloc, "ZIGBRAINS_PORT") catch |e| switch (e) {
-            error.EnvironmentVariableNotFound => return error.NoPortGiven,
-            else => return e,
-        };
+	const port_str = if (envInGraph)
+		b.graph.environ_map.get("ZIGBRAINS_PORT") orelse return error.NoPortGiven
+	else
+		std.process.getEnvVarOwned(alloc, "ZIGBRAINS_PORT") catch |e| switch (e) {
+			error.EnvironmentVariableNotFound => return error.NoPortGiven,
+			else => return e,
+		};
 
-    // translate it to an int
-    const port = try std.fmt.parseInt( u16, port_str, 10 );
+	// translate it to an int
+	const port = try std.fmt.parseInt( u16, port_str, 10 );
 	std.log.info( "[ZigBrains:BuildScan] IDE is listening on port {}", .{ port } );
 
 	// get an Io implementation
@@ -120,10 +120,10 @@ pub fn build( b: *std.Build ) !void {
 	else
 		{};
 	defer if (postIOGate and !ioInGraph) threaded_io.deinit();
-    const io = if (postIOGate) if (ioInGraph) b.graph.io else threaded_io.io() else {};
+	const io = if (postIOGate) if (ioInGraph) b.graph.io else threaded_io.io() else {};
 
 	// connect to the IDE
-    var stream = if (postIOGate) netblk: {
+	var stream = if (postIOGate) netblk: {
 		const ip = std.Io.net.IpAddress{
 			.ip4 = .loopback(port),
 		};
