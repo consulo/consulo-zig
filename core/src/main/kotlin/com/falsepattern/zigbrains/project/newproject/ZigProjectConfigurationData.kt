@@ -30,7 +30,7 @@ import com.falsepattern.zigbrains.shared.zigCoroutineScope
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.GitRepositoryInitializer
-import com.intellij.openapi.application.writeAction
+import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
@@ -91,7 +91,7 @@ data class ZigProjectConfigurationData(
                     }
                     return@indeterminateStep true
                 } else {
-                    writeAction {
+                    edtWriteAction {
                         val projectName = project.name
                         for (fileTemplate in template.fileTemplates()) {
                             val (fileName, parentDir) = fileTemplate.key.let {
@@ -135,7 +135,7 @@ private suspend fun createGitIgnoreFile(projectDir: VirtualFile, requestor: Any)
         return
     }
 
-    writeAction {
+    edtWriteAction {
         ZigProjectConfigurationData::class.java.getResourceAsStream("/fileTemplates/internal/gitignore")?.use {
             val file = projectDir.createChildData(requestor, ".gitignore")
             file.charset = Charsets.UTF_8

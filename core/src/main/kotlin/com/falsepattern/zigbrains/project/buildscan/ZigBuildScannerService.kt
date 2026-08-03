@@ -31,7 +31,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.Application
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
-import com.intellij.openapi.application.writeAction
+import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileEditor.FileDocumentManager
@@ -226,7 +226,7 @@ class ZigBuildScannerService(private val project: Project): SerializablePersiste
 
 	private tailrec suspend fun dispatchReload(allowCache: Boolean) {
 		withEDTContext(ModalityState.defaultModalityState()) {
-			writeAction {
+			edtWriteAction {
 				FileDocumentManager.getInstance().saveAllDocuments()
 			}
 		}

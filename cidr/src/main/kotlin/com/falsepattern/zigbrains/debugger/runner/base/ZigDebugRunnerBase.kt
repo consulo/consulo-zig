@@ -106,7 +106,7 @@ abstract class ZigDebugRunnerBase<ProfileState : ZigProfileState<*>> : ZigProgra
             }
             return@reportProgress runInterruptibleEDT(ModalityState.any()) {
                 val debuggerManager = XDebuggerManager.getInstance(environment.project)
-                debuggerManager.startSession(environment, object: XDebugProcessStarter() {
+                debuggerManager.newSessionBuilder(object: XDebugProcessStarter() {
                     override fun start(session: XDebugSession): XDebugProcess {
                         val project = session.project
                         val textConsoleBuilder = state.consoleBuilder
@@ -115,7 +115,10 @@ abstract class ZigDebugRunnerBase<ProfileState : ZigProfileState<*>> : ZigProgra
                         debugProcess.start()
                         return debugProcess
                     }
-                }).runContentDescriptor
+                })
+                    .environment(environment)
+                    .startSession()
+                    .runContentDescriptor
             }
         }
     }

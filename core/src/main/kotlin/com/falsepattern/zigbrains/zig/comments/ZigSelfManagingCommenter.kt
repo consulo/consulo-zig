@@ -25,16 +25,13 @@ package com.falsepattern.zigbrains.zig.comments
 import com.falsepattern.zigbrains.zig.comments.cfg.ZigCommenterService
 import com.falsepattern.zigbrains.zig.comments.cfg.ZigCommenterState
 import com.falsepattern.zigbrains.zig.psi.ZigTypes
-import com.intellij.codeInsight.generation.CommenterDataHolder
 import com.intellij.codeInsight.generation.SelfManagingCommenter
 import com.intellij.lang.CodeDocumentationAwareCommenter
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.util.text.isLineBreak
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiFile
 import com.intellij.util.text.CharArrayUtil
-import kotlin.math.min
 
 class ZigSelfManagingCommenter: SelfManagingCommenter<ZigCommenterDataHolder>, CodeDocumentationAwareCommenter {
 	override fun getLineCommentPrefix() = COMMENT
@@ -224,9 +221,12 @@ class ZigSelfManagingCommenter: SelfManagingCommenter<ZigCommenterDataHolder>, C
 		var offset = offset
 
 		// skip whitespace
-		while ( offset < len && sequence[offset].isWhitespace() && !sequence[offset].isLineBreak() ) {
-			offset += 1
-		}
+        while (offset < len) {
+            val c = sequence[offset]
+            if (!c.isWhitespace() || c == '\r' || c == '\n')
+                break
+            offset += 1
+        }
 
 		return offset
 	}

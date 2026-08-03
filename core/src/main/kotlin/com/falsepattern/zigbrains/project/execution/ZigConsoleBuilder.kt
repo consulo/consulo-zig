@@ -25,12 +25,12 @@ package com.falsepattern.zigbrains.project.execution
 import com.intellij.execution.filters.TextConsoleBuilderImpl
 import com.intellij.execution.ui.ConsoleView
 import com.intellij.openapi.project.Project
-import com.intellij.terminal.TerminalExecutionConsole
+import com.intellij.terminal.TerminalExecutionConsoleBuilder
 
 class ZigConsoleBuilder(private val project: Project, private val emulateTerminal: Boolean = false): TextConsoleBuilderImpl(project) {
     override fun createConsole(): ConsoleView {
         return if (emulateTerminal)
-            TerminalExecutionConsole(project, null)
+            TerminalExecutionConsoleBuilder(project).build()
         else
             super.createConsole()
     }
