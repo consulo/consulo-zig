@@ -1,5 +1,3 @@
-import org.gradle.plugins.ide.idea.model.IdeaModel
-
 /*
  * This file is part of ZigBrains.
  *
@@ -48,4 +46,8 @@ configure<JavaPluginExtension> {
     val jv = JavaVersion.toVersion(javaVersion)
     sourceCompatibility = jv
     targetCompatibility = jv
+}
+
+tasks.withType<org.gradle.jvm.tasks.Jar> {
+    entryCompression = ZipEntryCompression.STORED
 }
