@@ -10,7 +10,7 @@ intellij-idea = "2026.1.4"
 intellij-nativeDebug = "261.25134.12"
 intellij-plugin = "2.18.1"
 # @keep
-java = "25"
+java = "21"
 # @pin
 kotlin = "2.3.0"
 # @pin
