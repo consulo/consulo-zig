@@ -1,5 +1,3 @@
-import org.jetbrains.intellij.platform.gradle.extensions.IntelliJPlatformRepositoriesExtension
-
 /*
  * This file is part of ZigBrains.
  *

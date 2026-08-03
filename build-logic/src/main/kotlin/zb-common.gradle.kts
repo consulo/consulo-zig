@@ -23,6 +23,7 @@ import org.gradle.plugins.ide.idea.model.IdeaModel
  */
 
 import org.gradle.accessors.dm.LibrariesForLibs
+import org.gradle.plugins.ide.idea.model.IdeaModel
 
 plugins {
     idea
