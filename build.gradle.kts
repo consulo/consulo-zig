@@ -159,6 +159,9 @@ tasks {
     publishPlugin {
         enabled = false
     }
+    buildSearchableOptions {
+        jvmArgs("--sun-misc-unsafe-memory-access=allow")
+    }
 }
 
 

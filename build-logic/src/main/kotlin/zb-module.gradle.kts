@@ -40,6 +40,7 @@ configure<KotlinJvmProjectExtension> {
     jvmToolchain(javaVersion)
     compilerOptions {
         jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
+        freeCompilerArgs.add("-Xannotation-default-target=param-property")
     }
 }
 

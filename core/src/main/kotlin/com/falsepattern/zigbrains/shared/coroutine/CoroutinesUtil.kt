@@ -56,7 +56,7 @@ inline fun <T> runModalOrBlocking(taskOwnerFactory: () -> ModalTaskOwner, titleF
     }
 }
 
-inline fun <T> runBlockingCancellableSafe(noinline action: suspend CoroutineScope.() -> T): T {
+fun <T> runBlockingCancellableSafe(action: suspend CoroutineScope.() -> T): T {
     val indicator = ProgressManager.getGlobalProgressIndicator()
     return if (indicator != null) {
         runBlockingCancellable(action = action)
