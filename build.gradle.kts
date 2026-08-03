@@ -9,30 +9,23 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
-    kotlin("jvm") version "2.3.0" apply false
-    kotlin("plugin.serialization") version "2.3.0" apply false
     id("org.jetbrains.intellij.platform")
-    id("org.jetbrains.intellij.platform.grammarkit") apply false
-    id("org.jetbrains.changelog") version "2.5.0"
-    id("org.jetbrains.gradle.plugin.idea-ext") version "1.4.1"
-    idea
+    id("org.jetbrains.changelog")
+    id("org.jetbrains.gradle.plugin.idea-ext")
     `maven-publish`
+    id("zb-common")
+    id("nl.littlerobots.version-catalog-update")
 }
 val publishVersions = listOf("251", "252", "253", "261")
-val pluginVersionFull get() = "$pluginVersion-$pluginSinceBuild"
-val pluginVersion: String by project
-val pluginSinceBuild: String by project
-val pluginUntilBuild: String by project
-val javaVersion = property("javaVersion").toString().toInt()
-val lsp4ijVersion: String by project
-val runIdeTarget: String by project
-val lsp4ijNightly = property("lsp4ijNightly").toString().toBoolean()
-val useInstallerProp = property("useInstaller").toString().toBoolean()
-val lsp4ijPluginString = "com.redhat.devtools.lsp4ij:$lsp4ijVersion${if (lsp4ijNightly) "@nightly" else ""}"
-val ideaCommunityVersion: String by project
-val clionVersion: String by project
+
+val pluginVersion = property("pluginVersion").toString()
+val pluginSinceBuild = property("pluginSinceBuild").toString()
+val pluginUntilBuild = property("pluginUntilBuild").toString()
+val runIdeTarget = property("runIdeTarget").toString()
 val lspCompat = property("lspCompat").toString().toBoolean()
 val cidrCompat = property("cidrCompat").toString().toBoolean()
+
+val pluginVersionFull get() = "$pluginVersion-$pluginSinceBuild"
 
 group = "com.falsepattern"
 version = pluginVersionFull
@@ -48,31 +41,11 @@ idea.project.settings.runConfigurations {
     }
     create("3. Run with LSP, no cidr", org.jetbrains.gradle.ext.Gradle::class.java) {
         taskNames = listOf("runIde")
-        scriptParameters = "-PlspCompat=true -PcidrCompat=false -PrunIdeTarget=ideaCommunity"
+        scriptParameters = "-PlspCompat=true -PcidrCompat=false -PrunIdeTarget=idea"
     }
     create("4. Run without LSP, no cidr", org.jetbrains.gradle.ext.Gradle::class.java) {
         taskNames = listOf("runIde")
-        scriptParameters = "-PlspCompat=false -PcidrCompat=false -PrunIdeTarget=ideaCommunity"
-    }
-}
-
-subprojects {
-    apply(plugin = "java")
-    apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "org.jetbrains.intellij.platform.module")
-    apply(plugin = "idea")
-
-    extensions.configure<KotlinJvmProjectExtension>("kotlin") {
-        jvmToolchain(javaVersion)
-        compilerOptions {
-            jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
-        }
-    }
-
-    tasks.withType<KotlinCompilationTask<*>>().configureEach {
-        compilerOptions {
-             freeCompilerArgs.addAll("-Xlambdas=indy")
-        }
+        scriptParameters = "-PlspCompat=false -PcidrCompat=false -PrunIdeTarget=idea"
     }
 }
 
@@ -85,59 +58,17 @@ tasks {
     }
 }
 
-allprojects {
-    idea {
-        module {
-            isDownloadSources = true
-        }
-    }
-
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(javaVersion)
-            @Suppress("UnstableApiUsage")
-            vendor = JvmVendorSpec.JETBRAINS
-        }
-        sourceCompatibility = JavaVersion.toVersion(javaVersion)
-        targetCompatibility = JavaVersion.toVersion(javaVersion)
-    }
-
-    repositories {
-        exclusiveContent {
-            forRepository {
-                maven {
-                    setUrl("https://mvn.falsepattern.com/releases")
-                    name = "mavenpattern"
-                }
-            }
-            filter {
-                includeModule("com.redhat.devtools.intellij", "lsp4ij")
-            }
-        }
-        mavenCentral()
-
-        intellijPlatform {
-            defaultRepositories()
-            snapshots()
-        }
-    }
-}
-
 dependencies {
     intellijPlatform {
         when(runIdeTarget) {
-            "ideaCommunity" -> create(IntelliJPlatformType.IntellijIdea, ideaCommunityVersion) {
-                useInstaller = useInstallerProp
-            }
-            "clion" -> create(IntelliJPlatformType.CLion, clionVersion) {
-                useInstaller = useInstallerProp
-            }
+            "idea" -> intellijIdea(libs.versions.intellij.idea)
+            "clion" -> clion(libs.versions.intellij.clion)
         }
 
         pluginVerifier()
         zipSigner()
         if (lspCompat) {
-            plugin(lsp4ijPluginString)
+            plugin("com.redhat.devtools.lsp4ij", libs.versions.lsp4ij.get())
         }
         pluginModule(runtimeOnly(project(":lang")))
         pluginModule(runtimeOnly(project(":core")))
@@ -206,13 +137,11 @@ intellijPlatform {
             }
         }
     }
-    buildSearchableOptions = false
-    instrumentCode = false
 }
 
 changelog {
     groups.empty()
-    repositoryUrl = providers.gradleProperty("pluginRepositoryUrl")
+    repositoryUrl = "https://codeberg.org/FalsePattern/ZigBrains"
 }
 
 tasks {

@@ -1,0 +1,32 @@
+[versions]
+changelog = "2.5.0"
+foojay-resolver = "1.0.0"
+idea-ext = "1.4.1"
+# @keep
+intellij-clion = "2026.1.4"
+# @keep
+intellij-idea = "2026.1.4"
+intellij-plugin = "2.18.1"
+# @keep
+java = "25"
+# @pin
+kotlin = "2.3.0"
+# @pin
+kotlin-serialization = "1.8.1"
+# @pin
+lsp4ij = "0.19.1"
+# @pin
+lsp4j = "0.21.1"
+vcu = "1.1.1"
+
+[libraries]
+kotlin-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm", version.ref = "kotlin-serialization" }
+lsp4ij = { module = "com.redhat.devtools.intellij:lsp4ij", version.ref = "lsp4ij" }
+lsp4j = { module = "org.eclipse.lsp4j:org.eclipse.lsp4j", version.ref = "lsp4j" }
+plugin-changelog = { module = "org.jetbrains.intellij.plugins:gradle-changelog-plugin", version.ref = "changelog" }
+plugin-foojay-resolver = { module = "org.gradle.toolchains:foojay-resolver", version.ref = "foojay-resolver" }
+plugin-idea-ext = { module = "gradle.plugin.org.jetbrains.gradle.plugin.idea-ext:gradle-idea-ext", version.ref = "idea-ext" }
+plugin-intellij = { module = "org.jetbrains.intellij.platform:intellij-platform-gradle-plugin", version.ref = "intellij-plugin" }
+plugin-kotlin-jvm = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+plugin-kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
+plugin-vcu = { module = "nl.littlerobots.vcu:plugin", version.ref = "vcu" }

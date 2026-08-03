@@ -1,106 +1,80 @@
-import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.tasks.GenerateLexerTask
 import org.jetbrains.intellij.platform.gradle.tasks.GenerateParserTask
 
 plugins {
+    id("zb-module")
     id("org.jetbrains.intellij.platform.grammarkit")
 }
 
-val grammarIdeaVersion: String by project
-
 dependencies {
     intellijPlatform {
-        create(IntelliJPlatformType.IntellijIdea, grammarIdeaVersion)
+        intellijIdea(libs.versions.intellij.idea)
     }
 }
 
-//region grammars
-run {
-    val grammarGenRoot = layout.buildDirectory.dir("generated/sources/grammarkit")
-    val rootPackagePath = "com/falsepattern/zigbrains"
-    val grammarSources = layout.projectDirectory.dir("src/main/grammar")
-
-    val parserDir = grammarGenRoot.map {it.dir("zig/parser")}
-    val lexerDir = grammarGenRoot.map {it.dir("zig/lexer")}
-    val lexerStringDir = grammarGenRoot.map {it.dir("zig/lexerstring")}
-    val zonParserDir = grammarGenRoot.map {it.dir("zon/parser")}
-    val zonLexerDir = grammarGenRoot.map {it.dir("zon/lexer")}
-
-    val grammarGenDirs = listOf(parserDir, lexerDir, lexerStringDir, zonParserDir, zonLexerDir)
-
-    sourceSets {
-        main {
-            java {
-                grammarGenDirs.forEach { srcDir(it) }
-            }
-        }
-    }
-
-    idea {
-        module {
-            grammarGenDirs.forEach {
-                val file = it.get().asFile
-                sourceDirs.add(file)
-                generatedSourceDirs.add(file)
-            }
-            sourceDirs.add(grammarSources.asFile)
-        }
-    }
-
-    tasks {
-        // region grammarkit
-        generateLexer {
-            purgeOldFiles = true
-            sourceFile = grammarSources.file("Zig.flex")
-            targetOutputDir = lexerDir.map { it.dir("$rootPackagePath/zig/lexer") }
-        }
-
-        register<GenerateLexerTask>("generateLexerString") {
-            purgeOldFiles = true
-            sourceFile = grammarSources.file("ZigString.flex")
-            targetOutputDir = lexerStringDir.map { it.dir("$rootPackagePath/zig/lexerstring") }
-
-        }
-
-        generateParser {
-            purgeOldFiles = true
-            sourceFile = grammarSources.file("Zig.bnf")
-            targetRootOutputDir = parserDir
-            pathToParser = "$rootPackagePath/zig/parser/ZigParser.java"
-            pathToPsiRoot = "$rootPackagePath/zig/psi"
-        }
-
-        register<GenerateLexerTask>("generateZonLexer") {
-            purgeOldFiles = true
-            sourceFile = grammarSources.file("Zon.flex")
-            targetOutputDir = zonLexerDir.map { it.dir("$rootPackagePath/zon/lexer") }
-        }
-
-        register<GenerateParserTask>("generateZonParser") {
-            purgeOldFiles = true
-            sourceFile = grammarSources.file("Zon.bnf")
-            targetRootOutputDir = zonParserDir
-            pathToParser = "$rootPackagePath/zon/parser/ZonParser.java"
-            pathToPsiRoot = "$rootPackagePath/zon/psi"
-        }
-
-        register<DefaultTask>("generateGrammars") {
-            group = "grammarkit"
-            dependsOn("generateLexer", "generateLexerString", "generateParser")
-            dependsOn("generateZonLexer", "generateZonParser")
-        }
-
-        compileJava {
-            dependsOn("generateGrammars")
-        }
-
-        compileKotlin {
-            dependsOn("generateGrammars")
+sourceSets {
+    main {
+        java {
+            srcDir(tasks.generateParser.map { it.targetRootOutputDir })
+            srcDir(tasks.generateLexer.map { it.targetRootOutputDir })
         }
     }
 }
-//endregion grammars
 
-tasks.composedJar {
-    archiveFileName = "com.falsepattern.zigbrains.lang.jar"
+val rootPackagePath = "com/falsepattern/zigbrains"
+val grammarSources = layout.projectDirectory.dir("src/main/grammar")
+
+tasks {
+    // region grammarkit
+    generateLexer {
+        description = "Generate Zig Lexer"
+        purgeOldFiles = true
+        sourceFile = grammarSources.file("Zig.flex")
+        pathToClass = "$rootPackagePath/zig/lexer/ZigFlexLexer.java"
+    }
+
+    register<GenerateLexerTask>("generateLexerString") {
+        description = "Generate Zig String Lexer"
+        purgeOldFiles = true
+        sourceFile = grammarSources.file("ZigString.flex")
+        pathToClass = "$rootPackagePath/zig/lexerstring/ZigLexerString.java"
+    }
+
+    generateParser {
+        description = "Generate Zig Parser"
+        purgeOldFiles = true
+        sourceFile = grammarSources.file("Zig.bnf")
+        pathToParser = "$rootPackagePath/zig/parser/ZigParser.java"
+        pathToPsiRoot = "$rootPackagePath/zig/psi"
+    }
+
+    register<GenerateLexerTask>("generateZonLexer") {
+        description = "Generate ZON Lexer"
+        purgeOldFiles = true
+        sourceFile = grammarSources.file("Zon.flex")
+        pathToClass = "$rootPackagePath/zon/lexer/ZonFlexLexer.java"
+    }
+
+    register<GenerateParserTask>("generateZonParser") {
+        description = "Generate ZON Parser"
+        purgeOldFiles = true
+        sourceFile = grammarSources.file("Zon.bnf")
+        pathToParser = "$rootPackagePath/zon/parser/ZonParser.java"
+        pathToPsiRoot = "$rootPackagePath/zon/psi"
+    }
+
+    register<DefaultTask>("generateGrammars") {
+        description = "Generate all grammar lexers/parsers"
+        group = "grammarkit"
+        dependsOn("generateLexer", "generateLexerString", "generateParser")
+        dependsOn("generateZonLexer", "generateZonParser")
+    }
+
+    compileJava {
+        dependsOn("generateGrammars")
+    }
+
+    compileKotlin {
+        dependsOn("generateGrammars")
+    }
 }

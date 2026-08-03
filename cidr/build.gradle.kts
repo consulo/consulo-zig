@@ -1,15 +1,12 @@
 import org.jetbrains.intellij.platform.gradle.Constants
-import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 
-val lsp4jVersion: String by project
-val clionVersion: String by project
-val useInstallerProp = property("useInstaller").toString().toBoolean()
+plugins {
+    id("zb-module")
+}
 
 dependencies {
     intellijPlatform {
-        create(IntelliJPlatformType.CLion, clionVersion) {
-            useInstaller = useInstallerProp
-        }
+        clion(libs.versions.intellij.clion)
         bundledPlugins("com.intellij.nativeDebug")
         bundledModules("intellij.cidr.workspaceModel")
     }
@@ -30,8 +27,4 @@ tasks {
     compileJava {
         enabled = false
     }
-}
-
-tasks.composedJar {
-    archiveFileName = "com.falsepattern.zigbrains.cidr.jar"
 }

@@ -1,33 +1,17 @@
-import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
-
 plugins {
+    id("zb-module")
     kotlin("plugin.serialization")
 }
 
-val lsp4ijVersion: String by project
-val lsp4jVersion: String by project
-val lsp4ijNightly = property("lsp4ijNightly").toString().toBoolean()
-val ideaCommunityVersion: String by project
-val useInstallerProp = property("useInstaller").toString().toBoolean()
-val serializationVersion: String by project
-val lsp4ijPluginString = "com.redhat.devtools.lsp4ij:$lsp4ijVersion${if (lsp4ijNightly) "@nightly" else ""}"
-
 dependencies {
     intellijPlatform {
-        create(IntelliJPlatformType.IntellijIdea, ideaCommunityVersion) {
-            useInstaller = useInstallerProp
-        }
-        if (lsp4ijNightly) {
-            plugin(lsp4ijPluginString)
-        }
+        intellijIdea(libs.versions.intellij.idea)
     }
-    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:$serializationVersion") {
+    compileOnly(libs.kotlin.serialization) {
         isTransitive = false
     }
-    if (!lsp4ijNightly) {
-        compileOnly("com.redhat.devtools.intellij:lsp4ij:$lsp4ijVersion")
-    }
-    compileOnly("org.eclipse.lsp4j:org.eclipse.lsp4j:$lsp4jVersion")
+    compileOnly(libs.lsp4ij)
+    compileOnly(libs.lsp4j)
     implementation(project(":core")) {
         isTransitive = false
     }
@@ -40,8 +24,4 @@ tasks {
     compileJava {
         enabled = false
     }
-}
-
-tasks.composedJar {
-    archiveFileName = "com.falsepattern.zigbrains.lsp.jar"
 }
