@@ -2,7 +2,6 @@
     <dependencies>
         <module name="intellij.clion.toolchains"/>
         <module name="intellij.clion.execution"/>
-        <module name="intellij.cidr.workspaceModel"/>
         <module name="intellij.cidr.debugger.core"/>
         <module name="com.falsepattern.zigbrains.core"/>
         <module name="com.falsepattern.zigbrains.cidr"/>
@@ -12,11 +11,6 @@
                 id="CLionProvider"
                 implementation="com.falsepattern.zigbrains.clion.ZigClionDebuggerDriverConfigurationProvider"
                 order="before DefaultProvider"
-        />
-    </extensions>
-    <extensions defaultExtensionNs="cidr.project">
-        <workspaceProvider
-                implementation="com.falsepattern.zigbrains.clion.ZigWorkspaceProvider"
         />
     </extensions>
 </idea-plugin>
