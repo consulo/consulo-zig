@@ -3,10 +3,9 @@
         <module name="intellij.clion.toolchains"/>
         <module name="intellij.clion.execution"/>
         <module name="intellij.cidr.workspaceModel"/>
+        <module name="intellij.cidr.debugger.core"/>
         <module name="com.falsepattern.zigbrains.core"/>
         <module name="com.falsepattern.zigbrains.cidr"/>
-        <plugin id="com.intellij.modules.cidr.debugger"/>
-        <plugin id="com.intellij.clion"/>
     </dependencies>
     <extensions defaultExtensionNs="com.falsepattern.zigbrains">
         <debuggerDriverProvider

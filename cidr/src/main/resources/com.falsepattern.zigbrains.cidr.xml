@@ -1,9 +1,8 @@
 <idea-plugin>
     <dependencies>
-        <module name="intellij.cidr.workspaceModel"/>
+        <module name="intellij.cidr.debugger.core"/>
         <module name="com.falsepattern.zigbrains.core"/>
         <module name="com.falsepattern.zigbrains.lang"/>
-        <plugin id="com.intellij.modules.cidr.debugger"/>
     </dependencies>
 
     <extensionPoints>
@@ -67,7 +66,4 @@
                 implementation="com.falsepattern.zigbrains.debugger.ZigLocalVariablesFilterHandler"
         />
     </extensions>
-
-    <extensionPoints>
-    </extensionPoints>
 </idea-plugin>

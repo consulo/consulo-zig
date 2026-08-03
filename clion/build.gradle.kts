@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
     intellijPlatform {
-        clion(libs.versions.intellij.idea)
+        clion(libs.versions.intellij.clion)
         bundledPlugins("com.intellij.nativeDebug")
         bundledModules("intellij.clion.toolchains", "intellij.clion.execution", "intellij.cidr.workspaceModel")
     }

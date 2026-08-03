@@ -6,9 +6,8 @@ plugins {
 
 dependencies {
     intellijPlatform {
-        clion(libs.versions.intellij.clion)
-        bundledPlugins("com.intellij.nativeDebug")
-        bundledModules("intellij.cidr.workspaceModel")
+        intellijIdea(libs.versions.intellij.idea)
+        plugin(libs.versions.intellij.nativeDebug.map { "com.intellij.nativeDebug:$it" })
     }
     implementation(project(":core")) {
         isTransitive = false

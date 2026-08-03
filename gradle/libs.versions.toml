@@ -6,6 +6,8 @@ idea-ext = "1.4.1"
 intellij-clion = "2026.1.4"
 # @keep
 intellij-idea = "2026.1.4"
+# @keep
+intellij-nativeDebug = "261.25134.12"
 intellij-plugin = "2.18.1"
 # @keep
 java = "25"
