@@ -1,8 +1,7 @@
 <idea-plugin>
     <dependencies>
         <module name="intellij.cidr.debugger.core"/>
-        <module name="com.falsepattern.zigbrains.core"/>
-        <module name="com.falsepattern.zigbrains.lang"/>
+        <module name="com.falsepattern.zigbrains.shared"/>
     </dependencies>
 
     <extensionPoints>

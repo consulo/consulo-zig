@@ -9,10 +9,7 @@ dependencies {
         intellijIdea(libs.versions.intellij.idea)
         plugin(libs.versions.intellij.nativeDebug.map { "com.intellij.nativeDebug:$it" })
     }
-    implementation(project(":core")) {
-        isTransitive = false
-    }
-    implementation(project(":lang")) {
+    implementation(project(":shared")) {
         isTransitive = false
     }
 

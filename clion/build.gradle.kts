@@ -9,7 +9,7 @@ dependencies {
         clion(libs.versions.intellij.clion)
         bundledModules("intellij.clion.toolchains", "intellij.clion.execution", "intellij.cidr.debugger.core")
     }
-    implementation(project(":core")) {
+    implementation(project(":shared")) {
         isTransitive = false
     }
     implementation(project(":cidr")) {

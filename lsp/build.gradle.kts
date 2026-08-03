@@ -12,10 +12,7 @@ dependencies {
     }
     compileOnly(libs.lsp4ij)
     compileOnly(libs.lsp4j)
-    implementation(project(":core")) {
-        isTransitive = false
-    }
-    implementation(project(":lang")) {
+    implementation(project(":shared")) {
         isTransitive = false
     }
 }

@@ -20,31 +20,18 @@
  * along with ZigBrains. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.falsepattern.zigbrains
+package com.falsepattern.zigbrains.zig
 
-import com.intellij.DynamicBundle
-import org.jetbrains.annotations.Nls
-import org.jetbrains.annotations.NonNls
-import org.jetbrains.annotations.PropertyKey
-import java.util.function.Supplier
+import com.falsepattern.zigbrains.Icons
+import com.falsepattern.zigbrains.ZigBrainsBundle
+import com.intellij.openapi.fileTypes.LanguageFileType
 
-@NonNls
-private const val BUNDLE = "zigbrains.LangBundle"
+object ZigFileType : LanguageFileType(ZigLanguage) {
+    override fun getName() = "Zig File"
 
-internal object ZigBrainsLangBundle {
-    private val INSTANCE = DynamicBundle(ZigBrainsLangBundle::class.java, BUNDLE)
+    override fun getDescription() = ZigBrainsBundle.message("zig.file.description")
 
-    fun message(
-        key: @PropertyKey(resourceBundle = BUNDLE) String,
-        vararg params: Any
-    ): @Nls String {
-        return INSTANCE.getMessage(key, *params)
-    }
+    override fun getDefaultExtension() = "zig"
 
-    fun lazyMessage(
-        key: @PropertyKey(resourceBundle = BUNDLE) String,
-        vararg params: Any
-    ): Supplier<@Nls String> {
-        return INSTANCE.getLazyMessage(key, *params)
-    }
+    override fun getIcon() = Icons.Zig
 }

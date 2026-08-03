@@ -67,8 +67,7 @@ dependencies {
         if (lspCompat) {
             plugin("com.redhat.devtools.lsp4ij", libs.versions.lsp4ij.get())
         }
-        pluginModule(runtimeOnly(project(":lang")))
-        pluginModule(runtimeOnly(project(":core")))
+        pluginModule(runtimeOnly(project(":shared")))
         if (cidrCompat) {
             pluginModule(runtimeOnly(project(":cidr")))
             pluginModule(runtimeOnly(project(":clion")))

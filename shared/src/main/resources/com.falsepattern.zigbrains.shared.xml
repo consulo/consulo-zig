@@ -1,11 +1,17 @@
 <idea-plugin>
     <dependencies>
         <module name="intellij.spellchecker"/>
-        <module name="com.falsepattern.zigbrains.lang"/>
     </dependencies>
     <resource-bundle>zigbrains.Bundle</resource-bundle>
     <!-- region Zig -->
     <extensions defaultExtensionNs="com.intellij">
+        <fileType
+                name="Zig File"
+                implementationClass="com.falsepattern.zigbrains.zig.ZigFileType"
+                fieldName="INSTANCE"
+                language="Zig"
+                extensions="zig"/>
+
         <colorSettingsPage
                 implementation="com.falsepattern.zigbrains.zig.highlighter.ZigColorSettingsPage"/>
         <lang.braceMatcher
@@ -74,6 +80,12 @@
 
     <!-- region Zon -->
     <extensions defaultExtensionNs="com.intellij">
+        <fileType
+                name="Zon File"
+                implementationClass="com.falsepattern.zigbrains.zon.ZonFileType"
+                fieldName="INSTANCE"
+                language="Zon"
+                extensions="zon"/>
         <lang.braceMatcher
                 language="Zon"
                 implementationClass="com.falsepattern.zigbrains.zon.pairing.ZonBraceMatcher"/>
@@ -201,7 +213,6 @@
                 implementation="com.falsepattern.zigbrains.project.stdlib.ZigDependencyLibraryRootProvider"
         />
 
-        <!--suppress PluginXmlValidity -->
         <toolWindow
                 factoryClass="com.falsepattern.zigbrains.project.steps.ui.BuildToolWindowFactory"
                 anchor="right"
@@ -244,7 +255,6 @@
                 icon="com.falsepattern.zigbrains.Icons.Zig">
             <add-to-group group-id="NewGroup" anchor="after" relative-to-action="FileTemplateSeparatorGroup"/>
         </action>
-        <!--suppress PluginXmlValidity -->
         <action id="zigbrains.file.run"
                 class="com.falsepattern.zigbrains.project.actions.ZigRunFileAction"
                 icon="AllIcons.RunConfigurations.TestState.Run"

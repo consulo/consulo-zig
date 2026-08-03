@@ -35,8 +35,7 @@ dependencyResolutionManagement {
 rootProject.name = "com.falsepattern.zigbrains"
 
 includeBuild("build-logic")
-include("core")
-include("lsp")
-include("cidr")
-include("lang")
-include("clion")
+include(":shared")
+include(":lsp")
+include(":cidr")
+include(":clion")

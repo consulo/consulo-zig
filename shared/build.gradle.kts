@@ -3,12 +3,17 @@ import org.jetbrains.intellij.platform.gradle.tasks.GenerateParserTask
 
 plugins {
     id("zb-module")
+    kotlin("plugin.serialization")
     id("org.jetbrains.intellij.platform.grammarkit")
 }
 
 dependencies {
     intellijPlatform {
         intellijIdea(libs.versions.intellij.idea)
+		bundledModule("intellij.spellchecker")
+    }
+    compileOnly(libs.kotlin.serialization) {
+        isTransitive = false
     }
 }
 

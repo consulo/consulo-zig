@@ -22,8 +22,7 @@
 
 <idea-plugin>
     <dependencies>
-        <module name="com.falsepattern.zigbrains.core"/>
-        <module name="com.falsepattern.zigbrains.lang"/>
+        <module name="com.falsepattern.zigbrains.shared"/>
         <plugin id="com.redhat.devtools.lsp4ij"/>
     </dependencies>
     <extensionPoints>

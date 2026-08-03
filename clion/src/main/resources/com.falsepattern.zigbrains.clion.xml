@@ -3,7 +3,7 @@
         <module name="intellij.clion.toolchains"/>
         <module name="intellij.clion.execution"/>
         <module name="intellij.cidr.debugger.core"/>
-        <module name="com.falsepattern.zigbrains.core"/>
+        <module name="com.falsepattern.zigbrains.shared"/>
         <module name="com.falsepattern.zigbrains.cidr"/>
     </dependencies>
     <extensions defaultExtensionNs="com.falsepattern.zigbrains">
