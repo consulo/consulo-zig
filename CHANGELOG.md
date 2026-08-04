@@ -2,6 +2,34 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Added support for running on Java 21 in the IDE (2026.1)
+- Improved plugin zip file compression
+- Commenter improvements (https://codeberg.org/FalsePattern/zigbrains/issues/16)
+  - Pressing enter at the end of comments/string no longer appends a new comment line
+  - Regular comments also no longer get a comment prefix inserted on enter 
+- Modified the per-file line markers to no longer interact with the build.zig system
+  - This allows running individual tests in files and debugging test at the cost of not using build.zig for them 
+    (https://codeberg.org/FalsePattern/zigbrains/issues/14)
+  - This feature needs to be revisited once Zig 0.17 is fully supported
+
+### Removed
+
+- Removed leftovers from the MSVC debugger adapter
+- Removed CLion workspace provider (does nothing anymore, prevented plugin from being modular)
+
+### Added
+
+- Case-sensitive autocomplete option (https://codeberg.org/FalsePattern/zigbrains/issues/12)
+- Support for trailing comma after `for` loop captures (https://codeberg.org/FalsePattern/zigbrains/pulls/13)
+
+### Fixed
+
+- Zig file template no longer errors out when used
+- `.path` dependencies accessible inside the current project are no longer marked as external libraries
+  (https://codeberg.org/FalsePattern/zigbrains/issues/15)
+
 ## [30.0.1] - 2026-04-18
 
 ### Fixed
