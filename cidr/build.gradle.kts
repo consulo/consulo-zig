@@ -9,10 +9,7 @@ dependencies {
         intellijIdea(libs.versions.intellij.idea)
         plugin(libs.versions.intellij.nativeDebug.map { "com.intellij.nativeDebug:$it" })
     }
-    implementation(project(":shared")) {
-        isTransitive = false
-    }
-
+    api(project(":shared"))
 }
 configurations[Constants.Configurations.INTELLIJ_PLATFORM_BUNDLED_PLUGINS].dependencies.configureEach {
     if (this is ExternalModuleDependency) {

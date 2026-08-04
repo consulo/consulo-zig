@@ -7,14 +7,9 @@ plugins {
 dependencies {
     intellijPlatform {
         clion(libs.versions.intellij.clion)
-        bundledModules("intellij.clion.toolchains", "intellij.clion.execution", "intellij.cidr.debugger.core")
+        bundledModules("intellij.clion.toolchains", "intellij.clion.execution", "intellij.cidr.debugger.core", "intellij.cidr.debugger.backend")
     }
-    implementation(project(":shared")) {
-        isTransitive = false
-    }
-    implementation(project(":cidr")) {
-        isTransitive = false
-    }
+    api(project(":cidr"))
 }
 configurations[Constants.Configurations.INTELLIJ_PLATFORM_BUNDLED_PLUGINS].dependencies.configureEach {
     if (this is ExternalModuleDependency) {
