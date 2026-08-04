@@ -106,18 +106,18 @@ BUILTINIDENTIFIER="@"[A-Za-z_][A-Za-z0-9_]*
 <CMT_LINE>       {nl_wrap} "////"         { }
 <CMT_LINE>       {nl_wrap} "///"          { yypushback(yylength()); yybegin(YYINITIAL); return LINE_COMMENT; }
 <CMT_LINE>       {nl_wrap} "//"           { }
-<CMT_LINE>       {LF}                     { yybegin(YYINITIAL); return LINE_COMMENT; }
+<CMT_LINE>       {LF}                     { yypushback(yylength()); yybegin(YYINITIAL); return LINE_COMMENT; }
 <CMT_LINE>       <<EOF>>                  { yybegin(YYINITIAL); return LINE_COMMENT; }
 
 <CMT_DOC>        {all_no_nl}              { }
 <CMT_DOC>        {nl_wrap} "////"         { yypushback(yylength()); yybegin(YYINITIAL); return DOC_COMMENT; }
 <CMT_DOC>        {nl_wrap} "///"          { }
-<CMT_DOC>        {LF}                     { yybegin(YYINITIAL); return DOC_COMMENT; }
+<CMT_DOC>        {LF}                     { yypushback(yylength()); yybegin(YYINITIAL); return DOC_COMMENT; }
 <CMT_DOC>        <<EOF>>                  { yybegin(YYINITIAL); return DOC_COMMENT; }
 
 <CMT_CDOC>       {all_no_nl}              { }
 <CMT_CDOC>       {nl_wrap} "//!"          { }
-<CMT_CDOC>       {LF}                     { yybegin(YYINITIAL); return CONTAINER_DOC_COMMENT; }
+<CMT_CDOC>       {LF}                     { yypushback(yylength()); yybegin(YYINITIAL); return CONTAINER_DOC_COMMENT; }
 <CMT_CDOC>       <<EOF>>                  { yybegin(YYINITIAL); return CONTAINER_DOC_COMMENT; }
 
 //Symbols
@@ -252,7 +252,7 @@ BUILTINIDENTIFIER="@"[A-Za-z_][A-Za-z0-9_]*
 <YYINITIAL>      "\\\\"                   { yybegin(STR_MULT_LINE); }
 <STR_MULT_LINE>  {all_no_nl}              { }
 <STR_MULT_LINE>  {nl_wrap} "\\\\"         { }
-<STR_MULT_LINE>  {LF}                     { yybegin(YYINITIAL); return STRING_LITERAL_MULTI; }
+<STR_MULT_LINE>  {LF}                     { yypushback(yylength()); yybegin(YYINITIAL); return STRING_LITERAL_MULTI; }
 <STR_MULT_LINE>  <<EOF>>                  { yybegin(YYINITIAL); return STRING_LITERAL_MULTI; }
 
 //Numbers

@@ -23,8 +23,8 @@
 package com.falsepattern.zigbrains.zig.editing
 
 import com.falsepattern.zigbrains.zig.psi.ZigFile
+import com.intellij.codeInsight.editorActions.enter.EnterHandlerDelegate
 import com.intellij.codeInsight.editorActions.enter.EnterHandlerDelegate.Result
-import com.intellij.codeInsight.editorActions.enter.EnterHandlerDelegateAdapter
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.actionSystem.EditorActionHandler
@@ -34,7 +34,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 
-class ZigEnterInTextBlockHandler : EnterHandlerDelegateAdapter() {
+class ZigEnterInTextBlockHandler : EnterHandlerDelegate {
     override fun preprocessEnter(
         file: PsiFile,
         editor: Editor,
@@ -45,6 +45,7 @@ class ZigEnterInTextBlockHandler : EnterHandlerDelegateAdapter() {
     ): Result {
         if (file !is ZigFile)
             return Result.Continue
+        PsiDocumentManager.getInstance(file.project).commitDocument(editor.document)
         for (assistant in ASSISTANTS) {
             return assistant.preprocessEnter(file, editor) ?: continue
         }
@@ -63,11 +64,17 @@ private fun <T : PsiElement> ZigMultilineAssistant<T>.preprocessEnter(
     val document = editor.document
 
     val textBlockOffset = textBlock.textOffset
+    val textBlockEnd = textBlockOffset + textBlock.textLength
+    val lineNumber = document.getLineNumber(offset)
+    val textBlockEndLineNumber = document.getLineNumber(textBlockEnd)
+    if (lineNumber > textBlockEndLineNumber)
+        return Result.Continue
+    if (lineNumber == textBlockEndLineNumber && !trailing)
+        return Result.Continue
+    val lineStartOffset = document.getLineStartOffset(lineNumber)
     val textBlockLine = document.getLineNumber(textBlockOffset)
     val textBlockLineStart = document.getLineStartOffset(textBlockLine)
     val indentPre = textBlockOffset - textBlockLineStart
-    val lineNumber = document.getLineNumber(offset)
-    val lineStartOffset = document.getLineStartOffset(lineNumber)
     val text = document.getText(TextRange(lineStartOffset, offset + 1))
     val parts = text.split(prefix, limit = 2).toMutableList()
     if (parts.size != 2)

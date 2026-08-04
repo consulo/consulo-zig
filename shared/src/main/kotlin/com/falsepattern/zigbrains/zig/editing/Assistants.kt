@@ -31,7 +31,6 @@ import com.intellij.psi.tree.IElementType
 
 val ASSISTANTS = listOf(
     StringAssistant,
-    CommentAssistant("//", ZigTypes.LINE_COMMENT),
     CommentAssistant("///", ZigTypes.DOC_COMMENT),
     CommentAssistant("//!", ZigTypes.CONTAINER_DOC_COMMENT)
 )
@@ -39,6 +38,8 @@ val ASSISTANTS = listOf(
 interface ZigMultilineAssistant<T: PsiElement> {
     val prefix: String
     fun acceptPSI(element: PsiElement): T?
+
+    val trailing: Boolean
 }
 
 object StringAssistant: ZigMultilineAssistant<ZigStringLiteral> {
@@ -61,6 +62,9 @@ object StringAssistant: ZigMultilineAssistant<ZigStringLiteral> {
         else
             null
     }
+
+    override val trailing: Boolean
+        get() = false
 }
 
 class CommentAssistant(override val prefix: String, private val tokenType: IElementType): ZigMultilineAssistant<PsiComment> {
@@ -70,4 +74,7 @@ class CommentAssistant(override val prefix: String, private val tokenType: IElem
         } else {
             null
         }
+
+    override val trailing: Boolean
+        get() = false
 }
