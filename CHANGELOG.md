@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [31.0.0] - 2026-08-04
+
 ### Changed
 
 - Added support for running on Java 21 in IntelliJ IDEA 2026.1

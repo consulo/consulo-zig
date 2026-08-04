@@ -161,10 +161,13 @@ tasks {
     buildSearchableOptions {
         jvmArgs("--sun-misc-unsafe-memory-access=allow")
     }
+    patchChangelog {
+        enabled = false
+    }
 }
 
 
-fun distFile(it: String) = layout.buildDirectory.file("dist/ZigBrains-$pluginVersion-$it-signed.zip")
+fun distFile(it: String) = layout.buildDirectory.file("dist/com.falsepattern.zigbrains-$pluginVersion-$it-signed.zip")
 
 publishVersions.forEach {
     tasks.register<PublishPluginTask>("jbpublish-$it").configure {
