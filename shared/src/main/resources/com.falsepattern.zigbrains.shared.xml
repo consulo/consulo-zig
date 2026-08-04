@@ -32,7 +32,7 @@
         <lang.syntaxHighlighterFactory
                 language="Zig"
                 implementationClass="com.falsepattern.zigbrains.zig.highlighter.ZigSyntaxHighlighterFactory"/>
-
+        <internalFileTemplate name="blank_zig_file"/>
         <!-- String manipulation -->
         <enterHandlerDelegate
                 id="ZigEnterInTextBlockHandler"
