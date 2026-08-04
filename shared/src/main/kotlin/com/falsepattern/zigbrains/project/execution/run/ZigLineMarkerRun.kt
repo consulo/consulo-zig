@@ -23,6 +23,7 @@
 package com.falsepattern.zigbrains.project.execution.run
 
 import com.falsepattern.zigbrains.project.execution.base.ZigTopLevelLineMarker
+import com.falsepattern.zigbrains.zig.psi.ZigFnProto
 import com.falsepattern.zigbrains.zig.psi.ZigTypes
 import com.intellij.icons.AllIcons.RunConfigurations.TestState
 import com.intellij.psi.PsiElement
@@ -31,20 +32,24 @@ import javax.swing.Icon
 
 class ZigLineMarkerRun: ZigTopLevelLineMarker() {
     override fun getDeclaration(element: PsiElement): PsiElement? {
-        if (element.elementType != ZigTypes.IDENTIFIER)
-            return null
-
-        if (!element.textMatches("main"))
-            return null
-
-        val parent = element.parent
-        if (parent.elementType != ZigTypes.FN_PROTO)
-            return null
-
-        return parent.parent
+        return element.zbResolveMainFnProto()
     }
 
     override fun getIcon(element: PsiElement): Icon {
         return TestState.Run
     }
+}
+
+fun PsiElement.zbResolveMainFnProto(): ZigFnProto? {
+    if (elementType != ZigTypes.IDENTIFIER)
+        return null
+
+    if (!textMatches("main"))
+        return null
+
+    val parent = parent
+    if (parent.elementType != ZigTypes.FN_PROTO)
+        return null
+
+    return parent as? ZigFnProto
 }

@@ -24,10 +24,10 @@ package com.falsepattern.zigbrains.project.execution.test
 
 import com.falsepattern.zigbrains.ZigBrainsBundle
 import com.falsepattern.zigbrains.project.execution.base.ZigConfigProducer
-import com.falsepattern.zigbrains.project.execution.base.findBuildZig
-import com.falsepattern.zigbrains.project.execution.base.hasTests
 import com.falsepattern.zigbrains.project.execution.firstConfigFactory
 import com.falsepattern.zigbrains.zig.psi.ZigFile
+import com.falsepattern.zigbrains.zig.psi.ZigTestDecl
+import com.falsepattern.zigbrains.zig.util.escape
 import com.intellij.execution.actions.ConfigurationFromContext
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.vfs.VirtualFile
@@ -40,19 +40,37 @@ class ZigConfigProducerTest: ZigConfigProducer<ZigExecConfigTest>() {
     }
 
     override fun setupConfigurationFromContext(configuration: ZigExecConfigTest, element: PsiElement, psiFile: ZigFile, filePath: Path, theFile: VirtualFile): Boolean {
-        if (!psiFile.hasTests()) {
-            return false
-        }
-        if (theFile.findBuildZig() != null) {
-            return false
-        }
+        val element = element.zbResolveParentTestDecl() ?: return false
+
+        val name = testName(element)
         configuration.filePath.path = filePath
-        configuration.name = ZigBrainsBundle.message("configuration.test.marker-name", theFile.presentableName)
+        configuration.name = cfgName(name, theFile.presentableName)
+        if (name != null) {
+            configuration.compilerArgs.args = "--test-filter \"$name\""
+        }
         return true
     }
 
     override fun isConfigurationFromContext(configuration: ZigExecConfigTest, element: PsiElement, psiFile: ZigFile, filePath: Path, theFile: VirtualFile): Boolean {
-        return filePath == configuration.filePath.path
+        val element = element.zbResolveParentTestDecl() ?: return false
+        if (filePath != configuration.filePath.path)
+            return false
+        val name = testName(element)
+        val cfgName = cfgName(name, theFile.presentableName)
+        return configuration.name == cfgName
+    }
+
+    private fun testName(element: ZigTestDecl): String? {
+        return element.identifier?.text?.escape()?.toString()
+            ?: element.stringLiteralSingle?.text?.trim('"')?.escape()?.toString()
+    }
+
+    private fun cfgName(testName: String?, fileName: String): String {
+        return if (testName == null) {
+            ZigBrainsBundle.message("configuration.test.marker-all-name", fileName)
+        } else {
+            ZigBrainsBundle.message("configuration.test.marker-name", testName, fileName)
+        }
     }
 
     override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {

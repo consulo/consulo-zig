@@ -24,7 +24,6 @@ package com.falsepattern.zigbrains.project.execution.run
 
 import com.falsepattern.zigbrains.project.execution.base.ZigConfigProducer
 import com.falsepattern.zigbrains.project.execution.base.findBuildZig
-import com.falsepattern.zigbrains.project.execution.base.hasMainFunction
 import com.falsepattern.zigbrains.project.execution.firstConfigFactory
 import com.falsepattern.zigbrains.zig.psi.ZigFile
 import com.intellij.execution.actions.ConfigurationFromContext
@@ -39,9 +38,8 @@ class ZigConfigProducerRun: ZigConfigProducer<ZigExecConfigRun>() {
     }
 
     override fun setupConfigurationFromContext(configuration: ZigExecConfigRun, element: PsiElement, psiFile: ZigFile, filePath: Path, theFile: VirtualFile): Boolean {
-        if (!psiFile.hasMainFunction()) {
-            return false
-        }
+        element.zbResolveMainFnProto() ?: return false
+
         if (theFile.findBuildZig() != null) {
             return false
         }
@@ -51,7 +49,7 @@ class ZigConfigProducerRun: ZigConfigProducer<ZigExecConfigRun>() {
     }
 
     override fun isConfigurationFromContext(configuration: ZigExecConfigRun, element: PsiElement, psiFile: ZigFile, filePath: Path, theFile: VirtualFile): Boolean {
-        return filePath == configuration.filePath.path
+        return filePath == configuration.filePath.path && element.zbResolveMainFnProto() != null
     }
 
     override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {

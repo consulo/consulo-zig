@@ -23,6 +23,7 @@
 package com.falsepattern.zigbrains.project.execution.test
 
 import com.falsepattern.zigbrains.project.execution.base.ZigTopLevelLineMarker
+import com.falsepattern.zigbrains.zig.psi.ZigTestDecl
 import com.falsepattern.zigbrains.zig.psi.ZigTypes
 import com.intellij.icons.AllIcons.RunConfigurations.TestState
 import com.intellij.psi.PsiElement
@@ -31,17 +32,21 @@ import javax.swing.Icon
 
 class ZigLineMarkerTest: ZigTopLevelLineMarker() {
     override fun getDeclaration(element: PsiElement): PsiElement? {
-        if (element.elementType != ZigTypes.KEYWORD_TEST)
-            return null
-
-        val parent = element.parent
-        if (parent.elementType != ZigTypes.TEST_DECL)
-            return null
-
-        return parent
+        return element.zbResolveParentTestDecl()
     }
 
     override fun getIcon(element: PsiElement): Icon {
         return TestState.Run_run
     }
+}
+
+fun PsiElement.zbResolveParentTestDecl(): ZigTestDecl? {
+    if (elementType != ZigTypes.KEYWORD_TEST)
+        return null
+
+    val parent = parent
+    if (parent.elementType != ZigTypes.TEST_DECL)
+        return null
+
+    return parent as? ZigTestDecl
 }

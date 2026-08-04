@@ -51,15 +51,19 @@ class ZigConfigProducerBuild: ZigConfigProducer<ZigExecConfigBuild>() {
         val buildZig = theFile.findBuildZig() ?: return false
         configuration.workingDirectory.path = buildZig.parent.toNioPath()
         if (element.elementType == ZigTypes.KEYWORD_TEST) {
-            configuration.name = ZigBrainsBundle.message("configuration.build.marker-test")
-            configuration.buildSteps.args = "test"
-            configuration.debugBuildSteps.args = ""
-            return true
+            return false
+            // TODO handle this better
+//            configuration.name = ZigBrainsBundle.message("configuration.build.marker-test")
+//            configuration.buildSteps.args = "test"
+//            configuration.debugBuildSteps.args = ""
+//            return true
         } else {
-            configuration.name = ZigBrainsBundle.message("configuration.build.marker-run")
-            configuration.buildSteps.args = "run"
-            configuration.debugBuildSteps.args = ""
-            return true
+            return false
+            // TODO handle this better
+//            configuration.name = ZigBrainsBundle.message("configuration.build.marker-run")
+//            configuration.buildSteps.args = "run"
+//            configuration.debugBuildSteps.args = ""
+//            return true
         }
     }
 
@@ -68,12 +72,14 @@ class ZigConfigProducerBuild: ZigConfigProducer<ZigExecConfigBuild>() {
         if (theFile.isBuildZig()) {
             return filePath.parent == dir
         } else {
-            if (element.elementType == ZigTypes.KEYWORD_TEST) {
-                if (configuration.buildSteps.args != "test")
-                    return false
-            }
-            val buildZig = theFile.findBuildZig() ?: return false
-            return buildZig.parent.toNioPath() == dir
+            return false
+            // TODO handle this better
+//            if (element.elementType == ZigTypes.KEYWORD_TEST) {
+//                if (configuration.buildSteps.args != "test")
+//                    return false
+//            }
+//            val buildZig = theFile.findBuildZig() ?: return false
+//            return buildZig.parent.toNioPath() == dir
         }
     }
 
