@@ -425,7 +425,7 @@ ForInput ::= Expr (DOT2 Expr?)? {recoverWhile="ZB_ForInput_Recover"}
 
 private ZB_ForInput_Recover ::= !(COMMA | RPAREN)
 
-ForPayload ::= PIPE ZB_ForPayload_Item (COMMA ZB_ForPayload_Item)* PIPE {pin=1}
+ForPayload ::= PIPE ZB_ForPayload_Item (COMMA ZB_ForPayload_Item)* COMMA? PIPE {pin=1}
 
 private ZB_ForPayload_Item ::= ASTERISK? IDENTIFIER {recoverWhile="ZB_ForPayload_Recover"}
 
