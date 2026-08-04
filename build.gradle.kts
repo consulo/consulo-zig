@@ -13,7 +13,7 @@ plugins {
     id("zb-common")
     id("nl.littlerobots.version-catalog-update")
 }
-val publishVersions = listOf("251", "252", "253", "261")
+val publishVersions = listOf("253", "261", "262")
 
 val pluginVersion = property("pluginVersion").toString()
 val pluginSinceBuild = property("pluginSinceBuild").toString()

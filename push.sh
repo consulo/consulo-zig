@@ -30,4 +30,4 @@ die () {
 
 [ "$#" -eq 1 ] || die "1 argument required, $# provided"
 
-git push --atomic "$1" "dev" "master" "251" "252" "253"
+git push --atomic "$1" "dev" "master" "253" "261"
