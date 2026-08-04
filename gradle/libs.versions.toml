@@ -3,18 +3,18 @@ changelog = "2.5.0"
 foojay-resolver = "1.0.0"
 idea-ext = "1.4.1"
 # @keep
-intellij-clion = "2026.1.4"
+intellij-clion = "2026.2.0.1"
 # @keep
-intellij-idea = "2026.1.4"
+intellij-idea = "2026.2.0.1"
 # @keep
-intellij-nativeDebug = "261.25134.12"
+intellij-nativeDebug = "262.9437.65"
 intellij-plugin = "2.18.1"
 # @keep
-java = "21"
+java = "25"
 # @pin
-kotlin = "2.3.0"
+kotlin = "2.4.0"
 # @pin
-kotlin-serialization = "1.8.1"
+kotlin-serialization = "1.9.0"
 # @pin
 lsp4ij = "0.19.1"
 # @pin
