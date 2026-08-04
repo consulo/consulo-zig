@@ -28,6 +28,7 @@ import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.roots.AdditionalLibraryRootsProvider
 import com.intellij.openapi.roots.SyntheticLibrary
 import com.intellij.openapi.util.io.toNioPathOrNull
@@ -49,12 +50,15 @@ class ZigDependencyLibraryRootProvider: AdditionalLibraryRootsProvider() {
 			libraries.add(ZigDependencyLibrary(std.name, root))
 		}
 		if (project.zigBuildScan.enabled) {
+            val intellijRoot = project.guessProjectDir()
+            val zigRoot = project.zigBuildScan.projects.firstOrNull()?.let { pathToVirtualFile(urlManager, vfsManager, it.path) }
 			libraries.addAll(
 				project.zigBuildScan
 					.projects
 					.asSequence()
 					.drop(1) // first is always the root project
 					.mapNotNull { pathToVirtualFile(urlManager, vfsManager, it.path)?.let( it::to ) }
+                    .filter { (_, file) -> file.isLocalPath(intellijRoot) || file.isLocalPath(zigRoot) }
 					.map { (proj, vf) ->
 						val parts = vf.name.split("-", limit = 3)
 						val name = when {
@@ -108,6 +112,21 @@ class ZigDependencyLibraryRootProvider: AdditionalLibraryRootsProvider() {
 			return Icons.Zig
 		}
 	}
+}
+
+private fun VirtualFile.isLocalPath(projectRoot: VirtualFile?): Boolean {
+    if (projectRoot == null)
+        return false
+    var parent = parent
+    while (parent != null) {
+        val name = parent.name
+        if ("zig-cache" == name || ".zig-cache" == name)
+            return false
+        if (parent == projectRoot)
+            return true
+        parent = parent.parent
+    }
+    return false
 }
 
 private fun pathToVirtualFile(urlManager: VirtualFileUrlManager, vfsManager: VirtualFileManager, path: String): VirtualFile? {
