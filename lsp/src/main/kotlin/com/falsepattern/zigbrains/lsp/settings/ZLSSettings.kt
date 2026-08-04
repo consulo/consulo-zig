@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NonNls
 @Suppress("PropertyName")
 data class ZLSSettings(
     @JvmField @Attribute val zlsConfigPath: @NonNls String = "",
+    @JvmField @Attribute val caseSensitiveAutocomplete: Boolean = true,
     @JvmField @Attribute val inlayHints: Boolean = true,
     @JvmField @Attribute val inlayHintsMaxFileSizeKb: Int = 128,
     @JvmField @Attribute val selectionRanges: Boolean = false,

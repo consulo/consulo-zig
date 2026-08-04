@@ -59,7 +59,11 @@ class ZigLanguageServerFactory: LanguageServerFactory, LanguageServerEnablementS
 
     @Suppress("UnstableApiUsage")
     override fun createClientFeatures(): LSPClientFeatures {
-        val features = LSPClientFeatures()
+        val features = object: LSPClientFeatures() {
+            override fun isCaseSensitive(file: PsiFile): Boolean {
+                return project.zls?.settings?.caseSensitiveAutocomplete ?: true
+            }
+        }
         features.formattingFeature = object: LSPFormattingFeature() {
             override fun isExistingFormatterOverrideable(file: PsiFile): Boolean {
                 return true

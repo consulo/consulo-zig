@@ -46,6 +46,7 @@ class ZLSSettingsPanel() : ImmutableElementPanel<ZLSSettings> {
         FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor()
             .withTitle(ZLSBundle.message("settings.zls-config-path.browse.title"))
     ).also { Disposer.register(this, it) }
+    private val caseSensitiveAutocomplete = JBCheckBox()
     private val inlayHints = JBCheckBox()
     private val inlayHintsMaxFileSize = ExtendableTextField(5).also { (it.document as PlainDocument).documentFilter = object: DocumentFilter() {
         override fun insertString(fb: FilterBypass?, offset: Int, string: String?, attr: AttributeSet?) {
@@ -95,6 +96,12 @@ class ZLSSettingsPanel() : ImmutableElementPanel<ZLSSettings> {
             "settings.zls-config-path.label",
             "settings.zls-config-path.tooltip"
         ) { cell(zlsConfigPath).align(AlignX.FILL) }
+        fancyRow(
+            "settings.case-sensitive-autocomplete.label",
+            "settings.case-sensitive-autocomplete.tooltip"
+        ) {
+            cell(caseSensitiveAutocomplete)
+        }
         fancyRow(
             "settings.selection-ranges.label",
             "settings.selection-ranges.tooltip"
@@ -209,6 +216,7 @@ class ZLSSettingsPanel() : ImmutableElementPanel<ZLSSettings> {
     private var data
         get() = ZLSSettings(
             zlsConfigPath.text,
+            caseSensitiveAutocomplete.isSelected,
             inlayHints.isSelected,
             inlayHintsMaxFileSize.text.toIntOrNull() ?: 128,
             selectionRanges.isSelected,
@@ -235,6 +243,7 @@ class ZLSSettingsPanel() : ImmutableElementPanel<ZLSSettings> {
         )
         set(value) {
             zlsConfigPath.text = value.zlsConfigPath
+            caseSensitiveAutocomplete.isSelected = value.caseSensitiveAutocomplete
             inlayHints.isSelected = value.inlayHints
             inlayHintsMaxFileSize.text = value.inlayHintsMaxFileSizeKb.toString()
             selectionRanges.isSelected = value.selectionRanges
