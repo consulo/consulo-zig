@@ -35,17 +35,15 @@ import com.intellij.execution.ui.RunContentDescriptor
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.openapi.rd.util.toPromise
 import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.TaskCancellation
 import com.intellij.platform.ide.progress.withModalProgress
 import com.intellij.platform.util.progress.reportProgress
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import org.jetbrains.concurrency.Promise
+import org.jetbrains.concurrency.toPromise
 
 abstract class ZigProgramRunner<ProfileState : ZigProfileState<*>>(protected val executorId: String) : AsyncProgramRunner<RunnerSettings>() {
-    @OptIn(ExperimentalCoroutinesApi::class)
     override fun execute(environment: ExecutionEnvironment, state: RunProfileState): Promise<RunContentDescriptor?> {
         FileDocumentManager.getInstance().saveAllDocuments()
         return environment.project.zigCoroutineScope.async {

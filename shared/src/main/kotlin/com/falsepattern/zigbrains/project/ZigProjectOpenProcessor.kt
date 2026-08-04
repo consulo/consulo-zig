@@ -42,10 +42,9 @@ class ZigProjectOpenProcessor: ProjectOpenProcessor() {
 
     override suspend fun openProjectAsync(
         virtualFile: VirtualFile,
-        projectToClose: Project?,
-        forceOpenInNewFrame: Boolean
+        projectOpenOptions: ProjectOpenOptions
     ): Project? {
         val basedir = if (virtualFile.isDirectory) virtualFile else virtualFile.parent
-        return (PlatformProjectOpenProcessor.getInstance() as ProjectOpenProcessor).openProjectAsync(basedir, projectToClose, forceOpenInNewFrame)
+        return (PlatformProjectOpenProcessor.getInstance() as ProjectOpenProcessor).openProjectAsync(basedir, projectOpenOptions)
     }
 }

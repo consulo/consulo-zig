@@ -23,7 +23,7 @@
 package com.falsepattern.zigbrains.errorreporter
 
 import com.falsepattern.zigbrains.ZigBrains
-import com.intellij.ide.plugins.PluginManagerCore
+import com.intellij.ide.plugins.PluginDetailsService
 import com.intellij.util.net.HttpConnectionUtils
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -74,7 +74,7 @@ object AnonymousFeedback {
     private val userAgent: String by lazy {
         var agent = "ZigBrains"
 
-        PluginManagerCore.getPlugin(ZigBrains.pluginId)?.let {
+        PluginDetailsService.getInstance().findDetails(ZigBrains.pluginId)?.let {
             agent = "${it.name} (${it.version})"
         }
         agent

@@ -26,7 +26,7 @@ import com.falsepattern.zigbrains.ZigBrains
 import com.falsepattern.zigbrains.ZigBrainsBundle
 import com.falsepattern.zigbrains.shared.zigCoroutineScope
 import com.intellij.ide.DataManager
-import com.intellij.ide.plugins.PluginManagerCore
+import com.intellij.ide.plugins.PluginDetailsService
 import com.intellij.idea.IdeaLogger
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.diagnostic.ErrorReportSubmitter
@@ -68,7 +68,7 @@ class ErrorReporter: ErrorReportSubmitter() {
                     builder.description = additionalInfo
                     builder.message = event.message
 
-                    PluginManagerCore.getPlugin(ZigBrains.pluginId)?.let { plugin ->
+                    PluginDetailsService.getInstance().findDetails(ZigBrains.pluginId)?.let { plugin ->
                         builder.pluginName = plugin.name
                         builder.pluginVersion = plugin.version
                     }

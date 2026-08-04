@@ -42,6 +42,7 @@ import com.intellij.execution.configuration.EnvironmentVariablesTextFieldWithBro
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.SettingsEditor
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.JBCheckBox
@@ -398,7 +399,7 @@ class ArgsConfigurable(
     }
 }
 
-class EnvConfigurable : ZigConfigurable<EnvConfigurable>, Cloneable {
+class EnvConfigurable(private val project: Project) : ZigConfigurable<EnvConfigurable>, Cloneable {
     var variables: EnvironmentVariablesData = EnvironmentVariablesData.DEFAULT
 
     override fun readExternal(element: Element) {
@@ -410,7 +411,7 @@ class EnvConfigurable : ZigConfigurable<EnvConfigurable>, Cloneable {
     }
 
     override fun createEditor(): ZigConfigModule<EnvConfigurable> {
-        return EnvConfigModule()
+        return EnvConfigModule(project)
     }
 
     override fun clone(): EnvConfigurable {
@@ -419,8 +420,8 @@ class EnvConfigurable : ZigConfigurable<EnvConfigurable>, Cloneable {
         return clone
     }
 
-    class EnvConfigModule : ZigConfigModule<EnvConfigurable> {
-        private val envComponent = EnvironmentVariablesTextFieldWithBrowseButton()
+    class EnvConfigModule(project: Project) : ZigConfigModule<EnvConfigurable> {
+        private val envComponent = EnvironmentVariablesTextFieldWithBrowseButton(project)
 
         override fun tryMatch(cfg: ZigConfigurable<*>): EnvConfigurable? {
             return cfg as? EnvConfigurable

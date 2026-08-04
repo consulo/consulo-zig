@@ -47,21 +47,39 @@ class ZigClionDebuggerDriverConfigurationProvider: ZigDebuggerDriverConfiguratio
 
         val toolchains = CPPToolchains.getInstance()
         var toolchain = toolchains.getToolchainByNameOrDefault("Zig")
-        if (toolchain == null || !toolchain.isDebuggerSupported) {
+        if (toolchain == null || !toolchain.isDebuggerSupportedReflective) {
             LOG.info("Couldn't find debug-compatible C++ toolchain with name \"Zig\"")
             toolchain = toolchains.defaultToolchain
         }
-        if (toolchain == null || !toolchain.isDebuggerSupported) {
+        if (toolchain == null || !toolchain.isDebuggerSupportedReflective) {
             LOG.info("Couldn't find debug-compatible C++ default toolchain")
             return null
         }
-        return when(toolchain.debuggerKind) {
+        return when(toolchain.debuggerKindReflective) {
             CPPDebugger.Kind.BUNDLED_GDB,
             CPPDebugger.Kind.CUSTOM_GDB -> CLionGDBDriverConfiguration(project, toolchain, isEmulateTerminal = emulateTerminal)
             CPPDebugger.Kind.BUNDLED_LLDB,
             CPPDebugger.Kind.CUSTOM_LLDB -> CLionLLDBDriverConfiguration(project, toolchain, isEmulateTerminal = emulateTerminal)
             else -> null
         }
+    }
+}
+
+//Deprecated for removal api, but replacement is complex
+private val CPPToolchains.Toolchain.isDebuggerSupportedReflective: Boolean get() {
+    return try {
+        CPPToolchains.Toolchain::class.java.getDeclaredMethod("isDebuggerSupported").invoke(this) as? Boolean ?: false
+    } catch (_: Throwable) {
+        false
+    }
+}
+
+//Deprecated for removal api, but replacement is complex
+private val CPPToolchains.Toolchain.debuggerKindReflective: CPPDebugger.Kind? get() {
+    return try {
+        CPPToolchains.Toolchain::class.java.getDeclaredMethod("getDebuggerKind").invoke(this) as? CPPDebugger.Kind
+    } catch (_: Throwable) {
+        null
     }
 }
 

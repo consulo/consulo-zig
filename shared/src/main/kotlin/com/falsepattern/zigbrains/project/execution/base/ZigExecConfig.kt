@@ -41,7 +41,7 @@ import org.jetbrains.annotations.Nls
 abstract class ZigExecConfig<T: ZigExecConfig<T>>(project: Project, factory: ConfigurationFactory, @Nls name: String): LocatableConfigurationBase<ZigProfileState<T>>(project, factory, name) {
     var workingDirectory = WorkDirectoryConfigurable("workingDirectory").apply { path = project.guessProjectDir()?.toNioPathOrNull() }
         private set
-	var environment = EnvConfigurable()
+	var environment = EnvConfigurable(project)
 		private set
 
 	abstract val suggestedName: @ActionText String
