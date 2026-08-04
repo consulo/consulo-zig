@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Added support for running on Java 21 in the IDE (2026.1)
+- Added support for running on Java 21 in IntelliJ IDEA 2026.1
 - Improved plugin zip file compression
 - Commenter improvements (https://codeberg.org/FalsePattern/zigbrains/issues/16)
   - Pressing enter at the end of comments/string no longer appends a new comment line
@@ -18,9 +18,13 @@
 
 - Removed leftovers from the MSVC debugger adapter
 - Removed CLion workspace provider (does nothing anymore, prevented plugin from being modular)
+- **Dropped support for IntelliJ IDEA 2025.1 and 2025.2**
+  - These IntelliJ versions use the old plugin model, which was getting extremely tedious to backport new features to
 
 ### Added
 
+- **Added full support for IntelliJ IDEA 2026.2**
+  - Resolved a bunch of deprecations and internal API usages, it properly passes plugin verification now
 - Case-sensitive autocomplete option (https://codeberg.org/FalsePattern/zigbrains/issues/12)
 - Support for trailing comma after `for` loop captures (https://codeberg.org/FalsePattern/zigbrains/pulls/13)
 
